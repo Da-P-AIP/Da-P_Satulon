@@ -1,7 +1,7 @@
 ---
-name: 'Saturon Task.yml '
+name: Saturon Task
 about: G1–G5 フェーズ別タスクやバグ報告用テンプレ
-title: ''
+title: saturon-task.yml
 labels: ''
 assignees: ''
 
