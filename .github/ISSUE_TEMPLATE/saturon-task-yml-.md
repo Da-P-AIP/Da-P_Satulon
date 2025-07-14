@@ -1,5 +1,5 @@
 ---
-name: Saturon Task
+name: 'Saturon Task.yml '
 about: G1–G5 フェーズ別タスクやバグ報告用テンプレ
 title: ''
 labels: ''
