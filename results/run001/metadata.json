@@ -1,0 +1,31 @@
+{
+  "execution": {
+    "run_id": "run001",
+    "start_time": "2025-07-15T04:15:30.123Z",
+    "end_time": "2025-07-15T04:16:15.456Z",
+    "duration_seconds": 45.333,
+    "hostname": "research-workstation-demo"
+  },
+  "environment": {
+    "python_version": "3.9.7",
+    "platform": "Linux-5.4.0-x86_64",
+    "cpu_count": 8,
+    "memory_gb": 16
+  },
+  "software": {
+    "da_p_satulon_version": "0.1.1",
+    "git_commit": "c6d6a2040405ce92bd95d4dc5c532454064001e5",
+    "git_branch": "g1/results-spec",
+    "is_dirty": false
+  },
+  "dependencies": {
+    "numpy": "1.24.3",
+    "matplotlib": "3.7.1",
+    "pandas": "2.0.3"
+  },
+  "performance": {
+    "peak_memory_mb": 45.2,
+    "avg_cpu_percent": 8.7,
+    "total_file_size_mb": 1.8
+  }
+}
