@@ -1,0 +1,129 @@
+# ===================== Satulon Task – Issue Form =====================
+name: "Satulon Task"
+description: "G1–G5 各フェーズのタスクやバグを登録するフォーム"
+title: "[PHASE]: <概要>"
+labels: 
+  - "topic:information_conductivity"  # ← 自動で付くラベル
+assignees: []  # 空なら手動アサイン
+
+# ---------------------------------------------------------------------
+body:
+  - type: dropdown
+    id: phase
+    attributes:
+      label: "Phase"
+      options:
+        - "G1"
+        - "G2" 
+        - "G3"
+        - "G4"
+        - "G5"
+      description: "該当する研究フェーズを選択してください"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: task_type
+    attributes:
+      label: "Task Type"
+      options:
+        - "新機能開発"
+        - "バグ修正"
+        - "ドキュメント作成"
+        - "研究・調査"
+        - "実験・テスト"
+        - "その他"
+      description: "タスクの種類を選択してください"
+    validations:
+      required: true
+
+  - type: input
+    id: priority
+    attributes:
+      label: "Priority"
+      placeholder: "High / Medium / Low"
+      description: "タスクの優先度を入力してください"
+    validations:
+      required: false
+
+  - type: textarea
+    id: breakdown
+    attributes:
+      label: "Task Breakdown"
+      description: |
+        やること・サブタスクを箇条書きで書いてください。
+        GitHub のチェックボックス - [ ] を使うと進捗管理が楽です。
+      placeholder: |
+        - [ ] サブタスク A
+        - [ ] サブタスク B
+        - [ ] サブタスク C
+    validations:
+      required: true
+
+  - type: textarea
+    id: objectives
+    attributes:
+      label: "目標・期待される成果"
+      description: "このタスクで達成したい目標や期待される成果を記述してください"
+      placeholder: |
+        - 〇〇機能の実装完了
+        - パフォーマンスの改善
+        - ドキュメントの整備
+    validations:
+      required: false
+
+  - type: textarea
+    id: resources
+    attributes:
+      label: "必要なリソース・参考資料"
+      description: "必要なツール、参考資料、関連ファイルなどを記載してください"
+      placeholder: |
+        - 関連ファイル: docs/xxx.md
+        - 参考論文: arXiv:2302.08353
+        - 必要なツール: Python 3.9+, TensorFlow
+        - 参考サイト: https://example.com
+    validations:
+      required: false
+
+  - type: input
+    id: estimated_time
+    attributes:
+      label: "見積もり時間"
+      placeholder: "例: 3日, 1週間, 2時間"
+      description: "このタスクの完了に必要な推定時間を入力してください"
+    validations:
+      required: false
+
+  - type: input
+    id: deadline
+    attributes:
+      label: "締切（任意）"
+      placeholder: "YYYY-MM-DD"
+      description: "締切がある場合は入力してください（YYYY-MM-DD形式）"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: dependencies
+    attributes:
+      label: "依存関係"
+      description: "このタスクに関連する依存関係がある場合はチェックしてください"
+      options:
+        - label: "他のタスクの完了を待つ必要がある"
+        - label: "外部ライブラリ・ツールの導入が必要"
+        - label: "他チームとの連携が必要"
+        - label: "レビュー・承認が必要"
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: "Additional Notes (optional)"
+      description: "その他の補足情報、注意事項、メモなどを自由に記入してください"
+      placeholder: |
+        - 注意事項: 
+        - 関連Issue: #123
+        - 参考情報:
+    validations:
+      required: false
+
+# =====================================================================
