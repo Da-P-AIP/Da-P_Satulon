@@ -1,0 +1,21 @@
+# Configuration for Flake8
+[flake8]
+max-line-length = 127
+extend-ignore = 
+    E203,  # whitespace before ':'
+    E501,  # line too long (handled by black)
+    W503,  # line break before binary operator
+exclude = 
+    .git,
+    __pycache__,
+    .pytest_cache,
+    .tox,
+    venv,
+    env,
+    build,
+    dist
+
+# Specific ignores for scientific computing
+per-file-ignores =
+    tests/*:F401,F811  # Allow unused imports in tests
+    examples/*:E402    # Allow imports not at top in examples
