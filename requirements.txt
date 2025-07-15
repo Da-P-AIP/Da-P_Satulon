@@ -1,4 +1,4 @@
-# Da-P_Satulon Requirements
+# Da-P_Satulon Requirements - G2 Phase Enhanced
 # Pinned versions for reproducibility
 
 # Core dependencies (pinned for stability)
@@ -6,10 +6,14 @@ numpy==1.26.4
 matplotlib==3.8.4
 pandas==2.2.2
 
-# Optional dependencies for enhanced functionality
+# Enhanced scientific computing for G2 phase
 scipy==1.12.0
-jupyter==1.0.0
+scikit-learn==1.4.2
 seaborn==0.13.2
+
+# GPU acceleration (optional but recommended)
+# cupy-cuda12x>=12.0.0  # Uncomment for GPU support
+# cupyx>=12.0.0         # Uncomment for GPU support
 
 # Development dependencies (for CI/CD)
 pytest==8.2.2
@@ -20,6 +24,13 @@ black==24.4.2
 sphinx==7.3.7
 sphinx-rtd-theme==2.0.0
 
-# Additional scientific computing tools
-tqdm==4.66.4  # Progress bars for long experiments
-pillow==10.3.0  # Image processing for enhanced plots
+# Additional tools for enhanced analysis
+tqdm==4.66.4          # Progress bars for long experiments
+pillow==10.3.0         # Image processing for enhanced plots
+jupyter==1.0.0         # Interactive analysis
+numba>=0.59.0          # JIT compilation for performance
+
+# Optional dependencies for extended functionality
+# tensorflow>=2.15.0    # For ML integration (future)
+# pytorch>=2.0.0        # Alternative ML backend (future)
+# plotly>=5.17.0        # Interactive visualizations (future)
