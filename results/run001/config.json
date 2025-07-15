@@ -1,0 +1,28 @@
+{
+  "experiment": {
+    "run_id": "run001",
+    "description": "Baseline CA-2D experiment with medium interaction strength for Issue #2 demonstration",
+    "phase": "G1"
+  },
+  "ca_parameters": {
+    "grid_size": [20, 20],
+    "interaction_strength": 0.5,
+    "boundary_conditions": "zero_flux",
+    "initial_conditions": "random_uniform"
+  },
+  "simulation": {
+    "iterations": 10,
+    "save_frequency": 1,
+    "random_seed": 42
+  },
+  "analysis": {
+    "conductivity_methods": ["simple", "entropy", "gradient"],
+    "save_grids": true,
+    "create_plots": true,
+    "create_gif": false
+  },
+  "computational": {
+    "algorithm_version": "1.1.0",
+    "optimization_level": "standard"
+  }
+}
