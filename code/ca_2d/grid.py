@@ -5,11 +5,12 @@ This module implements the core CA-2D class for studying information
 conductivity in 2D cellular automata systems.
 
 Author: Da-P-AIP Research Team
-Version: 0.1.0 (G1 Phase)
+Version: 0.1.1 (G1 Phase - Issue #1 Implementation)
 """
 
 import numpy as np
 from typing import Tuple, Optional
+from .info_cond import calculate_information_conductivity
 
 
 class CA2D:
@@ -37,7 +38,7 @@ class CA2D:
             random_seed: Random seed for reproducibility
         """
         self.grid_size = grid_size
-        self.interaction_strength = interaction_strength
+        self.interaction_strength = max(0.0, min(1.0, interaction_strength))  # Clamp to [0,1]
         self.history = []
         
         if random_seed is not None:
@@ -60,52 +61,78 @@ class CA2D:
     def _single_update(self) -> None:
         """Perform a single update step of the cellular automaton
         
-        TODO (G1): Implement actual CA update rules with interaction_strength
-        Currently: Placeholder implementation
+        Implements a diffusion-like cellular automaton with configurable
+        interaction strength.
         """
-        # STUB: Simple diffusion-like update
-        # This will be replaced with proper CA rules in Issue #1
         h, w = self.grid_size
         new_grid = self.grid.copy()
         
+        # Apply CA rules with interaction_strength
         for i in range(1, h - 1):
             for j in range(1, w - 1):
-                # Simple neighbor averaging with interaction strength
+                # Calculate neighbor influence
                 neighbors = (self.grid[i-1, j] + self.grid[i+1, j] + 
                            self.grid[i, j-1] + self.grid[i, j+1])
+                neighbor_avg = neighbors / 4.0
+                
+                # Update rule: blend current state with neighbor average
+                # interaction_strength=0: no change
+                # interaction_strength=1: full neighbor averaging
                 new_grid[i, j] = (self.grid[i, j] * (1 - self.interaction_strength) + 
-                                neighbors * self.interaction_strength / 4)
+                                neighbor_avg * self.interaction_strength)
+        
+        # Handle boundary conditions (periodic or zero-flux)
+        self._apply_boundary_conditions(new_grid)
         
         self.grid = new_grid
     
-    def information_conductivity(self) -> float:
+    def _apply_boundary_conditions(self, grid: np.ndarray) -> None:
+        """Apply boundary conditions to the grid
+        
+        Args:
+            grid: Grid to apply boundary conditions to (modified in-place)
+        """
+        h, w = self.grid_size
+        
+        # Zero-flux boundary conditions (no change at boundaries)
+        # Alternative: could implement periodic or other boundary conditions
+        
+        # Top and bottom rows
+        grid[0, :] = grid[1, :]
+        grid[h-1, :] = grid[h-2, :]
+        
+        # Left and right columns  
+        grid[:, 0] = grid[:, 1]
+        grid[:, w-1] = grid[:, w-2]
+    
+    def information_conductivity(self, method: str = 'simple') -> float:
         """Calculate information conductivity of current grid state
+        
+        Args:
+            method: Calculation method ('simple', 'entropy', 'gradient')
         
         Returns:
             float: Information conductivity measure
-            
-        TODO (G1): Implement proper information conductivity metric
-        Currently: Placeholder returning mean activity
         """
-        # STUB: Simple mean-based placeholder
-        # This will be replaced with proper information theory metrics
-        return float(self.grid.mean())
+        return calculate_information_conductivity(
+            self.grid, 
+            method=method,
+            interaction_strength=self.interaction_strength
+        )
     
-    def get_conductivity_series(self) -> np.ndarray:
+    def get_conductivity_series(self, method: str = 'simple') -> np.ndarray:
         """Calculate information conductivity for all states in history
+        
+        Args:
+            method: Calculation method ('simple', 'entropy', 'gradient')
         
         Returns:
             np.ndarray: Time series of conductivity values
         """
-        conductivities = []
-        current_grid = self.grid
-        
-        for state in self.history:
-            self.grid = state
-            conductivities.append(self.information_conductivity())
-        
-        self.grid = current_grid  # Restore current state
-        return np.array(conductivities)
+        return calculate_information_conductivity(
+            self.history,
+            method='temporal' if method == 'simple' else method
+        )
     
     def get_state(self, timestep: Optional[int] = None) -> np.ndarray:
         """Get grid state at specified timestep
@@ -115,10 +142,17 @@ class CA2D:
             
         Returns:
             np.ndarray: Grid state at specified timestep
+            
+        Raises:
+            IndexError: If timestep is out of range
         """
         if timestep is None:
             return self.grid.copy()
-        return self.history[timestep].copy()
+        
+        if 0 <= timestep < len(self.history):
+            return self.history[timestep].copy()
+        else:
+            raise IndexError(f"Timestep {timestep} out of range [0, {len(self.history)})")
     
     def reset(self, random_seed: Optional[int] = None) -> None:
         """Reset the cellular automaton to initial random state
@@ -131,6 +165,25 @@ class CA2D:
         
         self.grid = np.random.random(self.grid_size)
         self.history = [self.grid.copy()]
+    
+    def get_statistics(self) -> dict:
+        """Get comprehensive statistics about the current CA state
+        
+        Returns:
+            dict: Statistical summary of the system
+        """
+        return {
+            'grid_size': self.grid_size,
+            'interaction_strength': self.interaction_strength,
+            'timesteps': len(self.history) - 1,
+            'current_mean': float(np.mean(self.grid)),
+            'current_std': float(np.std(self.grid)),
+            'current_min': float(np.min(self.grid)),
+            'current_max': float(np.max(self.grid)),
+            'info_conductivity_simple': self.information_conductivity('simple'),
+            'info_conductivity_entropy': self.information_conductivity('entropy'),
+            'info_conductivity_gradient': self.information_conductivity('gradient'),
+        }
 
 
 def example_usage():
@@ -143,18 +196,24 @@ def example_usage():
     print(f"Interaction strength: {ca.interaction_strength}")
     
     # Run simulation
-    print("\\nRunning 10 iterations...")
+    print("\nRunning 10 iterations...")
     ca.update(10)
     
-    # Calculate information conductivity
-    final_conductivity = ca.information_conductivity()
-    conductivity_series = ca.get_conductivity_series()
+    # Calculate information conductivity with different methods
+    methods = ['simple', 'entropy', 'gradient']
+    print(f"\nFinal information conductivity:")
+    for method in methods:
+        conductivity = ca.information_conductivity(method)
+        print(f"  {method.capitalize()}: {conductivity:.4f}")
     
-    print(f"Final information conductivity: {final_conductivity:.4f}")
-    print(f"Conductivity trend: {conductivity_series[0]:.4f} -> {conductivity_series[-1]:.4f}")
-    print(f"Total states in history: {len(ca.history)}")
+    # Get statistics
+    stats = ca.get_statistics()
+    print(f"\nSystem statistics:")
+    print(f"  Timesteps: {stats['timesteps']}")
+    print(f"  Current mean: {stats['current_mean']:.4f}")
+    print(f"  Current std: {stats['current_std']:.4f}")
     
-    print("\\n=== Example Complete ===")
+    print("\n=== Example Complete ===")
 
 
 if __name__ == "__main__":
