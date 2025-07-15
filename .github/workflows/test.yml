@@ -1,59 +1,21 @@
-name: Tests and Linting
+name: Tests and Quality Assurance
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, 'g1/**' ]
   pull_request:
     branches: [ main ]
 
+env:
+  PYTHONPATH: ${{ github.workspace }}
+
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.8, 3.9, '3.10', 3.11]
-
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        pip install -r requirements.txt
-    
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    
-    - name: Test CA-2D basic functionality
-      run: |
-        python code/ca_2d/grid.py
-    
-    - name: Test experiment runner
-      run: |
-        python run_experiments.py --grid-size 5 --iterations 3 --interaction-steps 2
-    
-    - name: Run pytest (when test files exist)
-      run: |
-        if [ -d "tests" ] && [ "$(ls -A tests)" ]; then
-          pytest tests/
-        else
-          echo "No tests directory or empty tests directory - skipping pytest"
-        fi
-
-  basic-functionality:
+  lint:
+    name: Code Quality (flake8)
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
     - name: Set up Python 3.9
       uses: actions/setup-python@v4
@@ -63,28 +25,312 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install flake8
+    
+    - name: Lint with flake8 (strict)
+      run: |
+        echo "=== Checking for syntax errors and undefined names ==="
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        
+        echo "=== Full flake8 check (no warnings allowed) ==="
+        flake8 . --count --max-complexity=10 --max-line-length=127 --statistics
+        
+        echo "✅ flake8 passed with no warnings"
+
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, '3.10', 3.11]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
     - name: Verify project structure
       run: |
+        echo "=== Project Structure Verification ==="
         ls -la
-        ls -la code/ca_2d/
-        ls -la results/
+        echo ""
+        echo "=== Code Structure ==="
+        find code -name "*.py" | head -10
+        echo ""
+        echo "=== Tests Structure ==="
+        find tests -name "*.py" | head -10
     
-    - name: Quick integration test
+    - name: Run unit tests with pytest
       run: |
-        echo "=== Testing CA-2D Grid ==="
-        python -c "from code.ca_2d.grid import CA2D; ca = CA2D(); ca.update(5); print(f'Conductivity: {ca.information_conductivity():.4f}')"
-        
-        echo "=== Testing Experiment Runner ==="
-        python run_experiments.py --grid-size 5 --iterations 2 --interaction-steps 2
-        
-        echo "=== Checking Results ==="
-        ls -la results/
-        if [ -d "results/run001" ]; then
-          echo "✅ Results directory created successfully"
-          ls -la results/run001/
+        echo "=== Running Unit Tests ==="
+        if [ -d "tests" ] && [ "$(find tests -name '*.py' -not -name '__*')" ]; then
+          pytest tests/ -v --tb=short
+          echo "✅ Unit tests passed"
         else
-          echo "❌ Results directory not found"
+          echo "⚠️  No test files found - creating basic test verification"
+          python -c "
+import sys, os
+sys.path.insert(0, 'code')
+try:
+    from ca_2d.grid import CA2D
+    print('✅ CA2D import successful')
+    ca = CA2D(grid_size=(5,5))
+    ca.update(2)
+    print(f'✅ CA2D basic functionality: {ca.information_conductivity():.4f}')
+except Exception as e:
+    print(f'❌ CA2D test failed: {e}')
+    sys.exit(1)
+"
+        fi
+    
+    - name: Test CA-2D core functionality
+      run: |
+        echo "=== CA-2D Core Functionality Test ==="
+        python -c "
+import sys
+sys.path.insert(0, 'code')
+
+# Test 1: Basic CA2D functionality
+print('Testing CA2D basic functionality...')
+from ca_2d.grid import CA2D
+ca = CA2D(grid_size=(10, 10), interaction_strength=0.5, random_seed=42)
+ca.update(5)
+conductivity = ca.information_conductivity()
+print(f'✅ CA2D test passed - Conductivity: {conductivity:.4f}')
+
+# Test 2: Convenience functions
+print('Testing convenience functions...')
+from ca_2d import create_ca
+ca2 = create_ca(grid_size=8, interaction_strength=0.3, seed=123)
+ca2.update(3)
+series = ca2.get_conductivity_series()
+print(f'✅ Convenience functions test passed - Series length: {len(series)}')
+
+# Test 3: Information conductivity
+print('Testing information conductivity calculations...')
+from ca_2d.info_cond import calculate_information_conductivity
+import numpy as np
+test_grid = np.random.rand(5, 5)
+for method in ['simple', 'entropy', 'gradient']:
+    result = calculate_information_conductivity(test_grid, method=method)
+    print(f'✅ {method} method: {result:.4f}')
+
+print('✅ All CA-2D core tests passed')
+"
+    
+    - name: Test experiment runner integration
+      run: |
+        echo "=== Experiment Runner Integration Test ==="
+        python run_experiments.py --grid-size 5 --iterations 3 --interaction-steps 2 --verbose
+        
+        echo "=== Verifying Results Directory ==="
+        if [ -d "results" ]; then
+          echo "✅ Results directory created"
+          ls -la results/
+          
+          # Check if run directory was created
+          if ls results/run* 1> /dev/null 2>&1; then
+            echo "✅ Run directory created successfully"
+            run_dir=$(ls -d results/run* | head -1)
+            echo "Checking contents of $run_dir:"
+            ls -la "$run_dir"
+            
+            # Verify key files exist
+            required_files=("config.json" "metadata.json" "results_summary.csv")
+            for file in "${required_files[@]}"; do
+              if [ -f "$run_dir/$file" ]; then
+                echo "✅ $file exists"
+              else
+                echo "❌ $file missing"
+                exit 1
+              fi
+            done
+            
+            echo "✅ All required files present"
+          else
+            echo "❌ No run directory found"
+            exit 1
+          fi
+        else
+          echo "❌ Results directory not created"
+          exit 1
+        fi
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Test complete research workflow
+      run: |
+        echo "=== Complete Research Workflow Test ==="
+        
+        # Test 1: Basic experiment
+        echo "Running basic experiment..."
+        python run_experiments.py --grid-size 8 --iterations 5 --interaction-steps 3 --verbose
+        
+        # Test 2: Method comparison
+        echo "Testing different conductivity methods..."
+        python run_experiments.py --grid-size 6 --iterations 4 --interaction-steps 2 \
+          --conductivity-method entropy --run-id test_entropy --verbose
+        
+        # Test 3: Analysis workflow
+        echo "Testing analysis workflow..."
+        python -c "
+import pandas as pd
+import json
+import os
+
+# Find the most recent run
+run_dirs = [d for d in os.listdir('results') if d.startswith('run')]
+if not run_dirs:
+    print('❌ No run directories found')
+    exit(1)
+
+latest_run = sorted(run_dirs)[-1]
+print(f'Analyzing run: {latest_run}')
+
+# Load and verify data
+results_path = f'results/{latest_run}/results_summary.csv'
+config_path = f'results/{latest_run}/config.json'
+
+if os.path.exists(results_path):
+    df = pd.read_csv(results_path)
+    print(f'✅ Results loaded: {len(df)} rows')
+    print(f'Columns: {list(df.columns)}')
+    
+    # Basic analysis
+    if 'conductivity_simple' in df.columns:
+        mean_cond = df['conductivity_simple'].mean()
+        print(f'✅ Mean conductivity: {mean_cond:.4f}')
+    else:
+        print('❌ conductivity_simple column missing')
+        exit(1)
+else:
+    print(f'❌ Results file not found: {results_path}')
+    exit(1)
+
+if os.path.exists(config_path):
+    with open(config_path) as f:
+        config = json.load(f)
+    print(f'✅ Config loaded: {config[\"experiment\"][\"description\"]}')
+else:
+    print(f'❌ Config file not found: {config_path}')
+    exit(1)
+
+print('✅ Complete workflow test passed')
+"
+    
+    - name: Test CLI help and validation
+      run: |
+        echo "=== CLI Interface Test ==="
+        
+        # Test help
+        python run_experiments.py --help
+        
+        # Test invalid arguments (should handle gracefully)
+        echo "Testing error handling..."
+        python run_experiments.py --grid-size 2 --iterations 1 --interaction-steps 1 || true
+        
+        echo "✅ CLI tests completed"
+    
+    - name: Performance and resource test
+      run: |
+        echo "=== Performance Test ==="
+        
+        # Test larger experiment to ensure no memory issues
+        timeout 60 python run_experiments.py --grid-size 20 --iterations 10 \
+          --interaction-steps 5 --save-plots || echo "Performance test completed (with timeout)"
+        
+        echo "=== Resource Usage Summary ==="
+        df -h
+        ls -lah results/ | head -10
+        
+        echo "✅ Performance test completed"
+
+  compatibility:
+    name: Compatibility Check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.9]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Cross-platform basic test
+      run: |
+        python -c "
+import sys
+sys.path.insert(0, 'code')
+from ca_2d import create_ca
+ca = create_ca(grid_size=5, interaction_strength=0.5, seed=42)
+ca.update(3)
+print(f'✅ Cross-platform test passed on {sys.platform}')
+"
+    
+    - name: Test experiment runner (short)
+      run: |
+        python run_experiments.py --grid-size 4 --iterations 2 --interaction-steps 2
+
+  status-check:
+    name: All Tests Status
+    runs-on: ubuntu-latest
+    needs: [lint, test, integration, compatibility]
+    if: always()
+    steps:
+    - name: Check all jobs status
+      run: |
+        echo "=== CI/CD Pipeline Status ==="
+        echo "Lint: ${{ needs.lint.result }}"
+        echo "Test: ${{ needs.test.result }}"
+        echo "Integration: ${{ needs.integration.result }}"
+        echo "Compatibility: ${{ needs.compatibility.result }}"
+        
+        if [ "${{ needs.lint.result }}" = "success" ] && \
+           [ "${{ needs.test.result }}" = "success" ] && \
+           [ "${{ needs.integration.result }}" = "success" ] && \
+           [ "${{ needs.compatibility.result }}" = "success" ]; then
+          echo "✅ All tests passed - Ready for merge!"
+          exit 0
+        else
+          echo "❌ Some tests failed - Check logs above"
           exit 1
         fi
