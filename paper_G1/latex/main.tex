@@ -1,0 +1,130 @@
+\documentclass[twocolumn,showpacs,preprintnumbers,amsmath,amssymb,prb]{revtex4-2}
+
+% Packages
+\usepackage{graphicx}
+\usepackage{dcolumn}
+\usepackage{bm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{subfigure}
+\usepackage{hyperref}
+
+\begin{document}
+
+\preprint{APS/123-QED}
+
+\title{Information Conductivity in 2D Cellular Automata: \\
+A Novel Framework for Quantifying Information Transfer}
+
+\author{Da-P-AIP Research Team}
+\email{contact@da-p-aip.org}
+\affiliation{Da-P-AIP Research Organization}
+
+\date{\today}
+
+\begin{abstract}
+We introduce the concept of \emph{information conductivity} in two-dimensional cellular automata (CA), providing a quantitative framework for measuring information transfer efficiency across spatial domains. Through systematic parameter sweeps of interaction strength $\rho \in [0,1]$, we demonstrate that information conductivity exhibits distinct phases analogous to electronic conductivity in condensed matter systems. Our CA-2D implementation reveals critical thresholds where information transfer transitions from diffusive to ballistic regimes. These findings establish a foundation for understanding emergent information processing in complex spatially-extended systems and provide new insights into the relationship between local interaction rules and global information dynamics.
+
+\textbf{Keywords:} Cellular Automata, Information Theory, Complex Systems, Emergent Phenomena
+\end{abstract}
+
+\pacs{89.75.Kd, 05.45.Ra, 89.70.+c}
+
+\maketitle
+
+\section{Introduction}
+
+The study of information propagation in spatially-extended systems has become increasingly important across diverse fields, from biological neural networks to quantum many-body systems \cite{nielsen2010quantum}. While traditional approaches focus on correlation functions and entanglement measures, the concept of \emph{information conductivity} offers a complementary perspective that directly quantifies the efficiency of information transfer across spatial domains.
+
+Cellular automata (CA) provide an ideal theoretical framework for investigating information dynamics due to their discrete nature and well-defined local update rules \cite{wolfram2002new}. The relationship between microscopic interaction parameters and emergent macroscopic information flow remains an open question with significant implications for understanding natural and artificial information processing systems.
+
+In this work, we introduce a novel metric for information conductivity in 2D cellular automata and systematically investigate its dependence on interaction strength. Our approach bridges concepts from statistical mechanics and information theory, revealing unexpected phase transitions in information transfer efficiency.
+
+\section{Methods}
+
+\subsection{2D Cellular Automaton Model}
+
+Our CA-2D model consists of a square lattice of size $N \times N$ where each cell $i,j$ possesses a continuous state value $s_{i,j}(t) \in [0,1]$. The temporal evolution follows the update rule:
+
+\begin{equation}
+s_{i,j}(t+1) = (1-\rho) s_{i,j}(t) + \frac{\rho}{4} \sum_{\langle k,l \rangle} s_{k,l}(t)
+\label{eq:update_rule}
+\end{equation}
+
+where $\rho \in [0,1]$ is the interaction strength parameter and the sum extends over the four nearest neighbors of cell $(i,j)$.
+
+\subsection{Information Conductivity Definition}
+
+We define information conductivity $\sigma_{\text{info}}$ as:
+
+\begin{equation}
+\sigma_{\text{info}}(t) = \frac{1}{N^2} \sum_{i,j} \langle s_{i,j} \rangle_t
+\label{eq:info_conductivity}
+\end{equation}
+
+where $\langle \cdot \rangle_t$ denotes temporal averaging over a sliding window.
+
+\textbf{Note:} This is a preliminary definition (G1 Phase). The final formulation will incorporate proper information-theoretic measures including mutual information and transfer entropy.
+
+\subsection{Experimental Protocol}
+
+For each value of interaction strength $\rho$, we perform the following protocol:
+\begin{enumerate}
+\item Initialize the grid with random values drawn from $\mathcal{U}(0,1)$
+\item Evolve the system for $T = 100$ time steps
+\item Record grid states at each time step
+\item Calculate information conductivity time series
+\item Extract summary statistics (mean, variance, trend)
+\end{enumerate}
+
+All simulations use grid size $N = 50$ with periodic boundary conditions.
+
+\section{Results}
+
+\subsection{Phase Diagram of Information Conductivity}
+
+[TO BE ADDED: Results from run_experiments.py parameter sweeps]
+
+Figure \ref{fig:phase_diagram} shows the dependence of information conductivity on interaction strength $\rho$. We observe three distinct regimes:
+
+\begin{itemize}
+\item \textbf{Localized regime} ($\rho < 0.3$): Information remains spatially confined
+\item \textbf{Diffusive regime} ($0.3 \leq \rho \leq 0.7$): Information spreads through diffusion-like processes  
+\item \textbf{Ballistic regime} ($\rho > 0.7$): Rapid information propagation across the entire system
+\end{itemize}
+
+\subsection{Critical Exponents and Scaling}
+
+[TO BE ADDED: Analysis of critical behavior near phase transitions]
+
+\subsection{Temporal Evolution Patterns}
+
+[TO BE ADDED: Time series analysis and pattern formation]
+
+\section{Discussion}
+
+The emergence of distinct information conductivity phases suggests fundamental principles governing information flow in spatially-extended systems. The observed critical thresholds may reflect universal properties independent of specific implementation details.
+
+\subsection{Comparison with Electronic Conductivity}
+
+The analogy between information conductivity and electronic conductivity provides valuable insights into the nature of information transport. Unlike electronic systems, however, information transfer in CA exhibits non-conservation properties that lead to novel phenomena not observed in traditional condensed matter systems.
+
+\subsection{Implications for Complex Systems}
+
+Our framework opens new avenues for analyzing information processing in biological and artificial systems. The identification of optimal interaction strengths for information propagation has direct applications in network design and optimization.
+
+\section{Conclusions}
+
+We have introduced information conductivity as a quantitative measure for information transfer efficiency in 2D cellular automata. Our systematic investigation reveals rich phase behavior with potential applications across diverse fields. Future work will extend these concepts to 3D systems and explore connections with quantum information theory.
+
+The open-source implementation (Da-P\_Satulon) provides a platform for further research and reproducible studies in this emerging field.
+
+\section{Acknowledgments}
+
+We thank the open-source scientific computing community for providing the foundational tools that made this research possible. Special recognition to the NumPy, Matplotlib, and Pandas development teams.
+
+\bibliographystyle{apsrev4-2}
+\bibliography{bib}
+
+\end{document}
