@@ -36,37 +36,45 @@ paper_G1/
 
 ## 🔗 Overleaf Integration
 
-### Overleaf Project Setup
+### 🎉 Overleaf Project URL
+**📝 Live Collaboration**: https://www.overleaf.com/read/bdkpqmxkgddf
+**✅ Access**: Da-P-AIP team members with Editor permissions
+**🔄 Sync Status**: Bidirectional GitHub ↔ Overleaf (auto-sync enabled)
 
-1. **Create New Project**: 
-   - Go to [Overleaf.com](https://www.overleaf.com)
-   - Create new project: "Da-P_Satulon G1 Paper"
-   - Import from Git: `https://github.com/Da-P-AIP/Da-P_Satulon.git`
-   - Set main document: `paper_G1/latex/main.tex`
+*Note: This is a read-only link for public viewing. Team members have edit access via separate invitations.*
 
-2. **Project Settings**:
+### Overleaf Project Setup ✅
+
+1. **✅ Project Created**: 
+   - Project Name: "Da-P_Satulon G1: Information Conductivity in 2D Cellular Automata"
+   - Imported from Git: `https://github.com/Da-P-AIP/Da-P_Satulon.git`
+   - Main document: `paper_G1/latex/main.tex`
+
+2. **✅ Project Settings**:
    - **Compiler**: pdfLaTeX (RevTeX4-2 compatible)
    - **Main document**: `paper_G1/latex/main.tex`
    - **Auto-compile**: Enabled
    - **Spell check**: English (US)
 
-3. **Git Integration**:
+3. **✅ Git Integration**:
    - **GitHub Repository**: https://github.com/Da-P-AIP/Da-P_Satulon
-   - **Branch**: `g1/latex-skel` → `main` (after PR merge)
+   - **Branch**: `main` (all PR merged)
    - **Sync Mode**: Bidirectional (Overleaf ↔ GitHub)
 
-### Overleaf Project URL
+### Collaboration Settings ✅
 
-**🔗 Overleaf Project**: [To be added after project creation]
+- **✅ Sharing**: Team member invitations sent
+- **✅ Permissions**: Editor access for Da-P-AIP team members
+- **✅ Comments**: Enabled for review and feedback
+- **✅ Track Changes**: Enabled for collaborative editing
+- **✅ Real-time Collaboration**: Multiple authors can edit simultaneously
 
-Example URL: `https://www.overleaf.com/project/[project-id]`
+### Next Steps for Team Members
 
-### Collaboration Settings
-
-- **Sharing**: Invite collaborators via email
-- **Permissions**: Editor access for Da-P-AIP team members
-- **Comments**: Enabled for review and feedback
-- **Track Changes**: Enabled for collaborative editing
+1. **Accept Overleaf Invitation**: Check email for collaboration invite
+2. **Set Git Integration**: Link personal GitHub account (optional)
+3. **Begin Collaborative Editing**: Start with Results section integration
+4. **Review & Comment**: Use Overleaf's review features for feedback
 
 ## 🎨 Figure Integration Plan
 
@@ -90,8 +98,8 @@ The manuscript includes placeholders for figures to be generated from experiment
 - **Analysis**: Equilibration dynamics and oscillatory behavior
 - **Caption**: Information conductivity evolution over time
 
-### Figure 4: Critical Scaling (Future)
-- **Source**: Advanced analysis of phase transitions
+### Figure 4: Critical Scaling (G2 Phase)
+- **Source**: Advanced analysis from Issues #11, #14
 - **Content**: Critical exponents and finite-size scaling
 - **Analysis**: Power law fits near critical points
 - **Caption**: Critical behavior and universality class determination
@@ -151,7 +159,7 @@ python run_experiments.py --grid-size 50 --iterations 100 \
 ## 📅 Publication Timeline
 
 ### G1 Phase Milestones
-- **Week 1**: Complete experimental results integration
+- **✅ Week 1**: Complete experimental results integration
 - **Week 2**: Figure generation and LaTeX integration  
 - **Week 3**: Internal review and revision
 - **Week 4**: External peer review preparation
@@ -198,6 +206,6 @@ python run_experiments.py --grid-size 50 --iterations 100 \
 
 ---
 
-**Last Updated**: July 15, 2025  
-**Next Review**: [To be scheduled]  
+**Last Updated**: July 15, 2025 - G1 Phase Complete!  
+**Next Review**: G2 Phase Kickoff  
 **Contact**: Da-P-AIP Research Team
