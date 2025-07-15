@@ -37,12 +37,45 @@ cd Da-P_Satulon
 pip install -r requirements.txt
 ```
 
-### Verify Installation
+### Verify Installation & CA-2D Core
 ```bash
-# Test core functionality
-python -c "from code.ca_2d import CA2D, create_ca; print('✅ Installation successful!')"
+# Test core CA-2D functionality (Issue #1)
+python -c "from code.ca_2d import CA2D, create_ca; print('✅ CA-2D core ready!')"
 
-# Run quick experiment (30 seconds)
+# Run CA-2D demo with interaction_strength
+python -c "from code.ca_2d import demo_ca_functionality; demo_ca_functionality()"
+
+# Test information_conductivity_stub
+python -c "from code.ca_2d import information_conductivity_stub; import numpy as np; print(f'Stub test: {information_conductivity_stub(np.random.random((5,5))):.4f}')"
+```
+
+### CA-2D Usage Examples
+```python
+# Basic CA-2D usage (Issue #1 implementation)
+from code.ca_2d import create_ca, CA2D
+
+# Create CA with specific parameters
+ca = create_ca(grid_size=30, interaction_strength=0.4, seed=42)
+
+# Run simulation with interaction_strength affecting updates
+ca.update(20)
+
+# Calculate information conductivity (stub implementation)
+conductivity = ca.information_conductivity()
+print(f"Information conductivity: {conductivity:.4f}")
+
+# Get time series analysis
+series = ca.get_conductivity_series()
+print(f"Conductivity evolution: {series[0]:.3f} → {series[-1]:.3f}")
+
+# System statistics
+stats = ca.get_statistics()
+print(f"Grid: {stats['grid_size']}, Timesteps: {stats['timesteps']}")
+```
+
+### Quick Experiment
+```bash
+# Run quick experiment (30 seconds) 
 python run_experiments.py --grid-size 20 --iterations 20 --interaction-steps 3 --verbose
 ```
 
@@ -99,10 +132,10 @@ Open the [Jupyter Demo Notebook](examples/notebook/sweep_demo.ipynb) for interac
 ```
 Da-P_Satulon/
 ├── 🔬 Research Code
-│   ├── code/ca_2d/          # 2D Cellular Automata
+│   ├── code/ca_2d/          # 2D Cellular Automata (✅ Issue #1 Complete)
 │   │   ├── __init__.py      # Clean imports: `from code.ca_2d import CA2D`
-│   │   ├── grid.py          # Core CA implementation
-│   │   └── info_cond.py     # Information conductivity metrics
+│   │   ├── grid.py          # Core CA implementation with interaction_strength
+│   │   └── info_cond.py     # Information conductivity metrics & stub
 │   └── code/ca_3d/          # 3D extension (G3+)
 ├── 📊 Results & Analysis
 │   ├── results/README.md    # Data format specification
@@ -133,7 +166,10 @@ Da-P_Satulon/
 - [x] **Interactive Jupyter Demo** - Publication-ready analysis ([notebook](examples/notebook/sweep_demo.ipynb))
 - [x] **Comprehensive Documentation** - 5-minute quick start ([guide](docs/usage.md))
 - [x] **LaTeX Paper Framework** - Publication-ready template ([paper](paper_G1/latex/main.tex))
-- [ ] **CA-2D Core Implementation** - Cellular automata engine ([#1](https://github.com/Da-P-AIP/Da-P_Satulon/issues/1))
+- [x] **CA-2D Core Implementation** - Cellular automata engine with interaction_strength ([#1](https://github.com/Da-P-AIP/Da-P_Satulon/issues/1)) ✅
+- [ ] **Data Output Specification** - Standardized result formats ([#2](https://github.com/Da-P-AIP/Da-P_Satulon/issues/2))
+- [ ] **Enhanced run_experiments.py** - CLI with full parameter support ([#3](https://github.com/Da-P-AIP/Da-P_Satulon/issues/3))
+- [ ] **CI Workflow Implementation** - Automated testing pipeline ([#4](https://github.com/Da-P-AIP/Da-P_Satulon/issues/4))
 - [ ] **Overleaf Integration** - Collaborative writing setup ([#5](https://github.com/Da-P-AIP/Da-P_Satulon/issues/5))
 
 ## 📊 Information Conductivity Methods
@@ -196,9 +232,10 @@ done
 
 ### Beginner (First Hour)
 1. **Complete 5-minute quick start** above
-2. **Run basic parameter sweep**: `python run_experiments.py --grid-size 30 --iterations 50`
-3. **Explore results**: Check `results/run001/` files
-4. **Read documentation**: [Usage Guide](docs/usage.md)
+2. **Test CA-2D core**: Run `python -c "from code.ca_2d import demo_ca_functionality; demo_ca_functionality()"`
+3. **Run basic parameter sweep**: `python run_experiments.py --grid-size 30 --iterations 50`
+4. **Explore results**: Check `results/run001/` files
+5. **Read documentation**: [Usage Guide](docs/usage.md)
 
 ### Intermediate (First Week)
 1. **Try different methods**: Run experiments with `--conductivity-method entropy`
@@ -265,6 +302,7 @@ Use our [YAML Issue Templates](https://github.com/Da-P-AIP/Da-P_Satulon/issues/n
 **Current Milestone**: G1-Draft (Target: Oct 5, 2025)
 
 ### Recent Updates
+- ✅ CA-2D core implementation with interaction_strength (Issue #1)
 - ✅ Enhanced experiment runner with multiple conductivity methods
 - ✅ Comprehensive information conductivity framework
 - ✅ Interactive Jupyter notebook for parameter sweeps
@@ -273,10 +311,10 @@ Use our [YAML Issue Templates](https://github.com/Da-P-AIP/Da-P_Satulon/issues/n
 - ✅ CI/CD pipeline with multi-Python testing
 
 ### Immediate Next Steps
-1. **Complete CA-2D implementation** (Issue #1)
-2. **Set up Overleaf integration** (Issue #5)
-3. **Create G1 research milestones**
-4. **Begin paper draft writing**
+1. **Set up data output specification** (Issue #2)
+2. **Enhance run_experiments.py CLI** (Issue #3)
+3. **Implement CI workflow** (Issue #4)
+4. **Set up Overleaf integration** (Issue #5)
 
 ## 🔧 System Requirements
 
