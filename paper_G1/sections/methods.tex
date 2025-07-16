@@ -1,0 +1,157 @@
+%% ------------------------------------------------------------------
+%%  Methods Section – Da‑P_Satulon (Enhanced G2)
+%%  This file lives in paper_G1/sections/methods.tex
+%%  ------------------------------------------------------------------
+\section{Methods\label{sec:methods}}
+
+This section describes the computational framework for studying information 
+conductivity in cellular automata, including the 3D extension, GPU acceleration, 
+and statistical analysis methods developed in the G2 phase.
+
+%--------------------------------------------------------------------
+\subsection{3D Cellular Automaton Model}
+%--------------------------------------------------------------------
+
+We extend the 2D framework to three spatial dimensions using a cubic lattice 
+$\Lambda = \{(i,j,k) : 1 \leq i,j,k \leq L\}$ with $N = L^3$ total cells. 
+Each cell $\sigma_{i,j,k}(t) \in [0,1]$ evolves according to the discrete-time 
+update rule:
+
+\begin{equation}
+\sigma_{i,j,k}(t+1) = (1-\rho)\sigma_{i,j,k}(t) + \frac{\rho}{6}\sum_{\langle \ell,m,n \rangle} \sigma_{\ell,m,n}(t)
+\label{eq:ca3d_update}
+\end{equation}
+
+where the sum runs over the six nearest neighbors (6-connected topology) and 
+$\rho \in [0,1]$ is the interaction strength parameter. Zero-flux boundary 
+conditions are applied at all faces of the cubic domain.
+
+%--------------------------------------------------------------------
+\subsection{Information Conductivity Measures}
+%--------------------------------------------------------------------
+
+We quantify information flow using three complementary measures that capture 
+different aspects of the cellular dynamics:
+
+\paragraph{Simple Conductivity:}
+\begin{equation}
+C_{\text{simple}}(t) = \frac{1}{N}\sum_{i,j,k} \sigma_{i,j,k}(t)
+\label{eq:simple}
+\end{equation}
+
+\paragraph{Entropy-based Conductivity:}
+The Shannon entropy of the probability distribution $p_s = |\{(i,j,k): \sigma_{i,j,k} \in [s, s+\Delta s)\}|/N$:
+\begin{equation}
+C_{\text{entropy}}(t) = -\sum_{s} p_s(t) \log p_s(t)
+\label{eq:entropy}
+\end{equation}
+
+\paragraph{Gradient-based Conductivity:}
+Spatial gradient magnitude averaged over the entire grid:
+\begin{equation}
+C_{\text{gradient}}(t) = \frac{1}{N}\sum_{i,j,k} \sqrt{(\nabla \sigma)_{i,j,k}^2}
+\label{eq:gradient}
+\end{equation}
+
+where $\nabla \sigma$ is computed using central differences with appropriate 
+boundary treatments.
+
+%--------------------------------------------------------------------
+\subsection{GPU Acceleration Implementation}
+%--------------------------------------------------------------------
+
+Large-scale 3D simulations ($L \geq 30$) require substantial computational 
+resources. We implement GPU acceleration using the CuPy library, which provides 
+NumPy-compatible array operations on NVIDIA GPUs. The core update kernel 
+processes the 3D grid in parallel blocks:
+
+\begin{algorithm}[t]
+\caption{GPU-accelerated 3D CA update}
+\label{alg:gpu_update}
+\begin{algorithmic}[1]
+\STATE \textbf{Input:} Grid $\sigma^{(t)} \in \mathbb{R}^{L \times L \times L}$, interaction strength $\rho$
+\STATE \textbf{Output:} Updated grid $\sigma^{(t+1)}$
+\STATE Copy $\sigma^{(t)}$ to GPU memory
+\STATE Launch CUDA kernel with thread blocks covering $(i,j,k)$ indices
+\FOR{each thread $(i,j,k)$ in parallel}
+    \STATE Compute neighbor sum: $s = \sum_{\langle \ell,m,n \rangle} \sigma_{\ell,m,n}^{(t)}$
+    \STATE Apply update rule: $\sigma_{i,j,k}^{(t+1)} = (1-\rho)\sigma_{i,j,k}^{(t)} + \rho s/6$
+\ENDFOR
+\STATE Copy result back to CPU memory
+\end{algorithmic}
+\end{algorithm}
+
+The implementation automatically falls back to CPU execution when GPU resources 
+are unavailable, ensuring broad compatibility.
+
+%--------------------------------------------------------------------
+\subsection{Parameter Optimization}
+%--------------------------------------------------------------------
+
+We employ Optuna~\cite{optuna2019} for Bayesian optimization of the interaction 
+strength $\rho$. The objective function maximizes the entropy-based conductivity:
+
+\begin{equation}
+\rho^* = \arg\max_{\rho \in [0,1]} \mathbb{E}[C_{\text{entropy}}(T)]
+\label{eq:optuna_objective}
+\end{equation}
+
+where $T$ is the final simulation time and the expectation is over random 
+initial conditions. Tree-structured Parzen Estimator (TPE) acquisition function 
+guides the search with 50 optimization trials.
+
+%--------------------------------------------------------------------
+\subsection{Critical Point Detection}
+%--------------------------------------------------------------------
+
+Phase transitions are identified by locating the maximum susceptibility:
+
+\begin{equation}
+\rho_c = \arg\max_{\rho} \left|\frac{\partial C(\rho)}{\partial \rho}\right|
+\label{eq:critical_detection}
+\end{equation}
+
+We perform parameter sweeps over $\rho \in [0.05, 0.20]$ with $N_{\text{sweep}}=10$ 
+uniformly spaced points. The gradient $\partial C/\partial \rho$ is estimated 
+using central differences with binomial smoothing to reduce numerical noise.
+
+%--------------------------------------------------------------------
+\subsection{Statistical Analysis}
+%--------------------------------------------------------------------
+
+\paragraph{Bootstrap Confidence Intervals:}
+We generate $N_{\text{bootstrap}}=1000$ resampled datasets to estimate 95\% 
+confidence intervals for all measured quantities.
+
+\paragraph{Finite-Size Scaling:}
+Critical exponents are extracted using the finite-size scaling ansatz:
+\begin{equation}
+C(L, \rho) = L^{-\beta/\nu} f\left(L^{1/\nu}(\rho - \rho_c)\right)
+\label{eq:fss}
+\end{equation}
+where $\beta$ and $\nu$ are critical exponents and $f$ is a universal scaling function.
+
+\paragraph{Universality Class Analysis:}
+Comparison with known 3D Ising model exponents ($\beta = 0.3265$, $\nu = 0.6301$) 
+helps classify the observed phase transition.
+
+%--------------------------------------------------------------------
+\subsection{Computational Setup}
+%--------------------------------------------------------------------
+
+All simulations use:
+\begin{itemize}
+\item Grid sizes: $L \in \{25, 30, 50\}$ (3D) for scaling studies
+\item Time steps: $\Delta t = 50$ for standard runs, up to $200$ for critical analysis
+\item Random seeds: Fixed at 42 for reproducibility
+\item Hardware: NVIDIA RTX series GPUs with CUDA compute capability $\geq 7.0$
+\item Software: Python 3.9+, CuPy 12.0+, NumPy 1.21+
+\end{itemize}
+
+The complete computational pipeline, from grid initialization through 
+statistical analysis, is automated and version-controlled to ensure 
+reproducible results.
+
+%% ------------------------------------------------------------------
+%%  End of file
+%% ------------------------------------------------------------------
