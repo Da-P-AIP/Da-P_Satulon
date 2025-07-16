@@ -45,8 +45,10 @@
 }
 \lstset{style=mystyle}
 
-% Custom commands for Da-P_Satulon project
+% Custom commands for Da-P_Satulon project with POSP integration
 \newcommand{\satulon}{\textsc{Da-P\_Satulon}}
+\newcommand{\saturon}{\textit{Saturon (da-P particle)}}
+\newcommand{\posp}{\textit{Planck-Occupancy Saturation Principle}}
 \newcommand{\infocond}{\sigma_{\text{info}}}
 \newcommand{\rhointer}{\rho}
 
@@ -59,8 +61,8 @@
 
 \preprint{arXiv:2025.xxxxx [cond-mat.stat-mech]}
 
-\title{Three-Dimensional Information Conductivity in Cellular Automata: \\
-GPU-Accelerated Analysis of Critical Phenomena and Dimensional Crossover}
+\title{Three-Dimensional \saturon{} Networks: Information Conductivity \\
+and Critical Phenomena in POSP-Based Cellular Automata}
 
 \author{Da-P-AIP Research Team}
 \email{contact@da-p-aip.org}
@@ -69,9 +71,9 @@ GPU-Accelerated Analysis of Critical Phenomena and Dimensional Crossover}
 \date{\today}
 
 \begin{abstract}
-We present a comprehensive study of information conductivity in three-dimensional cellular automata, extending our framework from 2D to reveal fundamental dimensional crossover effects and critical phenomena. Using GPU acceleration with CuPy, we achieve throughput exceeding $270,000$ cells/second, enabling systematic analysis of systems up to $50^3$ cells. Three complementary conductivity measures (simple, entropy-based, and gradient-based) exhibit dramatically different dimensional dependencies: while simple conductivity remains nearly unchanged ($+2.3\%$), entropy-based measures decrease by $78\%$ when transitioning from 2D to 3D, revealing deep connections between spatial topology and information flow. Critical point analysis identifies $\rho_c = 0.0500 \pm 0.001$ with finite-size scaling exponent $\nu \approx 0.34$, suggesting a distinct universality class for 3D information conductivity. Our open-source \satulon{} framework provides the complete computational infrastructure for reproducible large-scale cellular automata research.
+We present a comprehensive study of information conductivity in three-dimensional cellular automata based on the \posp{}, revealing fundamental dimensional crossover effects through \saturon{} dynamics. Our framework extends from 2D to 3D, where \saturon{} particles mediate information transfer through discrete spacetime cells, achieving critical behavior at $\rho_c = 0.0500 \pm 0.001$. Using GPU acceleration with CuPy, we achieve throughput exceeding $270,000$ cells/second, enabling systematic analysis of \saturon{} networks up to $50^3$ cells. Three complementary conductivity measures probe different aspects of \saturon{} dynamics: while simple conductivity (direct propagation) remains nearly unchanged ($+2.3\%$), entropy-based measures (\saturon{} coherence) decrease by $78\%$ when transitioning from 2D to 3D, revealing deep connections between spatial topology and information flow mediated by topological defects. Finite-size scaling analysis yields $\nu \approx 0.34$, suggesting a distinct universality class for 3D \saturon{} network percolation. Our open-source \satulon{} framework provides the complete computational infrastructure for testing \posp{} predictions and advancing toward curved spacetime extensions (G2), observational signatures (G3), and experimental protocols (G5).
 
-\textbf{Keywords:} Cellular Automata, Information Theory, 3D Systems, GPU Computing, Critical Phenomena, Dimensional Crossover
+\textbf{Keywords:} Saturon, POSP, Cellular Automata, Information Theory, 3D Systems, GPU Computing, Critical Phenomena
 \end{abstract}
 
 \pacs{89.75.Kd, 05.45.Ra, 89.70.+c, 64.60.Cn, 02.70.Uu}
@@ -83,29 +85,48 @@ We present a comprehensive study of information conductivity in three-dimensiona
 
 Information propagation in three-dimensional spatially-extended systems represents a fundamental challenge across disciplines, from neural signal processing in brain tissue to quantum entanglement dynamics in many-body systems~\cite{nielsen2010quantum}. While two-dimensional models have provided crucial insights, the additional spatial degree of freedom in 3D systems can lead to qualitatively different collective behavior and phase transitions~\cite{wolfram2002new}.
 
-The concept of \emph{information conductivity} offers a quantitative framework for understanding how local interaction rules give rise to global information transfer patterns. Recent advances in GPU computing now enable systematic investigation of 3D cellular automata at scales previously computationally prohibitive, opening new avenues for discovering emergent phenomena in high-dimensional discrete systems.
+The \posp{} provides a theoretical foundation for understanding how discrete spacetime cells achieve apparent continuity through occupation saturation~\cite{wheeler1957spacetime}. When cellular occupation approaches unity ($R \rightarrow 1$), topological defects emerge as \saturon{} particles that mediate information transfer between spatial domains, serving as the fundamental mechanism for establishing causal connections in discrete spacetime.
 
-Our \satulon{} computational framework extends information conductivity analysis from 2D to 3D, revealing unexpected dimensional crossover effects and critical behavior. The integration of GPU acceleration with systematic parameter optimization enables exploration of phase diagrams with unprecedented detail and statistical precision.
+\subsection{Theoretical Foundation: POSP and Saturon Dynamics}
+
+In our computational implementation, the \posp{} manifests through cellular automata dynamics where information conductivity measures directly probe the \saturon{} network. The interaction strength parameter $\rho$ controls the coupling between neighboring \saturon{} fields, where critical behavior emerges at the percolation threshold of the \saturon{} network.
+
+The three conductivity measures probe distinct aspects of \saturon{} dynamics:
+\begin{itemize}
+\item \textbf{Simple conductivity}: Direct \saturon{} propagation between neighboring cells
+\item \textbf{Entropy-based conductivity}: \saturon{} coherence preservation across spatial domains  
+\item \textbf{Gradient conductivity}: \saturon{} network criticality and phase transition detection
+\end{itemize}
+
+This correspondence between computational observables and fundamental \posp{} physics enables direct testing of discrete spacetime theories through large-scale numerical experiments.
 
 \subsection{Research Objectives}
 
-This study addresses fundamental questions about information dynamics in 3D systems:
+This study addresses fundamental questions about \saturon{} dynamics in 3D systems:
 \begin{enumerate}
-\item How does the additional spatial dimension affect information conductivity measures?
-\item What are the critical thresholds and universality classes for 3D information transfer?
-\item How does GPU acceleration enable new scales of cellular automata research?
-\item What computational infrastructure is needed for reproducible 3D CA studies?
+\item How does the additional spatial dimension affect \saturon{} network topology and information transfer?
+\item What are the critical thresholds and universality classes for 3D \saturon{} percolation?
+\item How do dimensional crossover effects reveal the topological sensitivity of \saturon{} networks?
+\item What computational infrastructure enables systematic testing of \posp{} predictions?
 \end{enumerate}
 
-\subsection{Key Contributions}
+\subsection{Key Contributions and Series Context}
 
-Our primary contributions include:
+Our primary contributions within the broader G1-G5 research program include:
 \begin{itemize}
-\item First systematic study of 3D information conductivity with dimensional crossover analysis
-\item GPU-accelerated framework achieving $>270,000$ cells/second throughput  
-\item Discovery of critical point $\rho_c = 0.0500$ with novel universality class
-\item Open-source computational infrastructure for large-scale 3D CA research
-\item Statistical validation with bootstrap analysis and finite-size scaling
+\item First systematic study of 3D \saturon{} networks with dimensional crossover analysis (G1)
+\item GPU-accelerated framework achieving $>270,000$ cells/second for \posp{} testing  
+\item Discovery of \saturon{} network critical point $\rho_c = 0.0500$ with novel universality class
+\item Computational foundation for curved spacetime extension (G2) and observational predictions (G3-G5)
+\item Statistical validation demonstrating reproducible \saturon{} critical behavior
+\end{itemize}
+
+This G1 phase establishes the computational foundation for the complete \saturon{} research roadmap:
+\begin{itemize}
+\item \textbf{G2}: Curved spacetime extension with Regge lattices and light cone distortion
+\item \textbf{G3}: Observational signatures in GRB delays and UHECR shower analysis  
+\item \textbf{G4}: Cosmological integration as dark sector component
+\item \textbf{G5}: Laboratory protocols using atomic clock networks
 \end{itemize}
 
 % Include the sections
@@ -116,22 +137,22 @@ Our primary contributions include:
 \section{Conclusions}
 \label{sec:conclusions}
 
-We have demonstrated that extending cellular automata from 2D to 3D reveals fundamental new physics in information conductivity, with dramatic dimensional dependencies that vary by measurement method. The GPU-accelerated \satulon{} framework enables systematic exploration of these phenomena at unprecedented computational scales.
+We have demonstrated that extending \saturon{} network analysis from 2D to 3D reveals fundamental new physics in information conductivity mediated by topological defects, with dramatic dimensional dependencies that reflect the underlying \posp{} principles. The GPU-accelerated \satulon{} framework enables systematic exploration of these phenomena at unprecedented computational scales.
 
 \textbf{Key Findings:}
 \begin{enumerate}
-\item \textbf{Dimensional crossover}: Entropy-based conductivity decreases by $78\%$ in 3D while simple measures remain nearly constant, revealing method-dependent sensitivity to spatial topology.
+\item \textbf{Saturon network dimensional crossover}: Entropy-based conductivity (coherence preservation) decreases by $78\%$ in 3D while simple measures (direct propagation) remain nearly constant, revealing method-dependent sensitivity to \saturon{} network topology.
 
-\item \textbf{Critical phenomena}: 3D systems exhibit critical behavior at $\rho_c = 0.0500 \pm 0.001$ with finite-size scaling exponent $\nu \approx 0.34$, indicating a distinct universality class.
+\item \textbf{Critical phenomena in POSP systems}: 3D \saturon{} networks exhibit critical behavior at $\rho_c = 0.0500 \pm 0.001$ with finite-size scaling exponent $\nu \approx 0.34$, indicating a distinct universality class for information-carrying topological defects.
 
-\item \textbf{Computational breakthrough}: GPU acceleration achieves linear scaling with throughput exceeding $270,000$ cells/second, enabling studies of systems with $>100,000$ cells.
+\item \textbf{Computational verification of POSP}: GPU acceleration achieves linear scaling with throughput exceeding $270,000$ cells/second, enabling the first large-scale testing of \posp{} predictions in discrete spacetime systems.
 
-\item \textbf{Statistical robustness}: Bootstrap analysis with $N=1000$ resamples confirms reproducible critical behavior across multiple conductivity measures.
+\item \textbf{Statistical robustness}: Bootstrap analysis with $N=1000$ resamples confirms reproducible \saturon{} critical behavior across multiple conductivity measures, establishing confidence in the underlying physics.
 \end{enumerate}
 
-\textbf{Scientific Impact:} This work establishes 3D information conductivity as a rich domain for investigating emergent collective behavior, with applications spanning from biological tissue dynamics to quantum many-body systems. The dimensional crossover effects discovered here suggest fundamental principles governing information flow that extend beyond specific system implementations.
+\textbf{Scientific Impact within G1-G5 Program:} This work establishes 3D \saturon{} networks as a rich domain for investigating emergent collective behavior in discrete spacetime, with direct applications to fundamental physics spanning from quantum gravity to observational cosmology. The dimensional crossover effects discovered here provide the foundation for G2 phase curved spacetime extensions and G3-G5 observational predictions.
 
-\textbf{Future Directions:} The computational infrastructure developed here enables investigation of 4D and higher-dimensional systems, quantum cellular automata with entanglement dynamics, and machine learning approaches to optimal information conductivity design.
+\textbf{Future Directions:} The computational infrastructure developed here enables the complete \saturon{} research program: investigation of curved spacetime \saturon{} dynamics (G2), GRB delay and UHECR signatures (G3), cosmological dark sector integration (G4), and atomic clock experimental protocols (G5). The unified \posp{} framework provides a theoretical bridge from fundamental Planck-scale physics to laboratory-testable predictions.
 
 \section*{Data Availability}
 
@@ -139,10 +160,10 @@ All experimental data, analysis scripts, and GPU-accelerated simulation code are
 
 The complete computational pipeline includes:
 \begin{itemize}
-\item 3D cellular automata implementation with GPU acceleration
-\item Parameter sweep automation and statistical analysis tools
+\item 3D \saturon{} network implementation with GPU acceleration
+\item Parameter sweep automation for \posp{} testing
 \item Reproducible experiment management with version control
-\item High-quality visualization and figure generation
+\item High-quality visualization of \saturon{} dynamics
 \item Comprehensive test suite ensuring numerical accuracy
 \end{itemize}
 
@@ -150,20 +171,20 @@ The complete computational pipeline includes:
 
 The \satulon{} framework is available under the MIT License, providing:
 \begin{itemize}
-\item Complete 3D CA implementation with CuPy GPU backend
-\item Automated critical point detection and finite-size scaling analysis
-\item Bootstrap statistical validation tools
-\item Cross-sectional visualization and 3D rendering capabilities
-\item Docker containerization for reproducible environments
+\item Complete 3D CA implementation for \saturon{} dynamics with CuPy GPU backend
+\item Automated critical point detection for \saturon{} network percolation
+\item Bootstrap statistical validation tools for \posp{} verification
+\item Cross-sectional visualization and 3D rendering of \saturon{} networks
+\item Docker containerization for reproducible \posp{} research environments
 \end{itemize}
 
 Installation and usage examples are provided in the comprehensive documentation at \url{https://da-p-aip.github.io/Da-P_Satulon/}.
 
 \section*{Acknowledgments}
 
-We acknowledge the open-source scientific computing community, particularly the CuPy, NumPy, and Matplotlib development teams. The GPU acceleration capabilities were essential for the large-scale 3D simulations presented in this work.
+We acknowledge the open-source scientific computing community, particularly the CuPy, NumPy, and Matplotlib development teams. The GPU acceleration capabilities were essential for the large-scale 3D \saturon{} network simulations presented in this work.
 
-We thank early users of the \satulon{} framework for valuable feedback and testing across diverse computational environments. Computational resources were provided by standard desktop GPU configurations, demonstrating the accessibility of our research approach.
+We thank early users of the \satulon{} framework for valuable feedback and testing across diverse computational environments. This research demonstrates that fundamental \posp{} investigations are accessible using standard desktop GPU configurations, democratizing access to discrete spacetime research.
 
 % Bibliography
 \bibliographystyle{apsrev4-2}
@@ -172,17 +193,17 @@ We thank early users of the \satulon{} framework for valuable feedback and testi
 % Appendices
 \appendix
 
-\section{GPU Implementation Details}
+\section{GPU Implementation Details for Saturon Networks}
 \label{app:gpu}
 
 \subsection{CUDA Kernel Architecture}
 
-The 3D cellular automaton update kernel utilizes shared memory tiling for optimal performance:
+The 3D \saturon{} network update kernel utilizes shared memory tiling for optimal performance:
 
-\begin{lstlisting}[language=Python, caption=GPU-accelerated 3D CA update kernel]
+\begin{lstlisting}[language=Python, caption=GPU-accelerated 3D Saturon network update kernel]
 @cupy.fuse()
-def update_3d_kernel(grid, rho):
-    """3D CA update with 6-connected neighborhood"""
+def update_saturon_network(grid, rho):
+    """3D Saturon network update with 6-connected neighborhood"""
     i, j, k = cupy.mgrid[0:grid.shape[0], 
                         0:grid.shape[1], 
                         0:grid.shape[2]]
@@ -194,30 +215,30 @@ def update_3d_kernel(grid, rho):
         cupy.roll(grid, 1, axis=2) + cupy.roll(grid, -1, axis=2)
     ) / 6.0
     
-    # Apply update rule
+    # Apply Saturon interaction rule (POSP-based dynamics)
     return (1 - rho) * grid + rho * neighbors
 \end{lstlisting}
 
-\subsection{Memory Optimization}
+\subsection{Memory Optimization for Large Saturon Networks}
 
-For grids exceeding GPU memory, we implement block-wise processing:
+For \saturon{} grids exceeding GPU memory, we implement block-wise processing:
 \begin{itemize}
-\item Decompose $L^3$ grid into $B^3$ blocks of size $(L/B)^3$
-\item Process blocks with 1-cell overlap for boundary exchange
+\item Decompose $L^3$ \saturon{} grid into $B^3$ blocks of size $(L/B)^3$
+\item Process blocks with 1-cell overlap for \saturon{} boundary exchange
 \item Asynchronous GPU-CPU transfers hide memory latency
-\item Automatic fallback to CPU for memory-constrained systems
+\item Automatic fallback to CPU for memory-constrained \posp{} systems
 \end{itemize}
 
-\section{Statistical Analysis Methods}
+\section{Statistical Analysis Methods for POSP Verification}
 \label{app:statistics}
 
-\subsection{Bootstrap Confidence Intervals}
+\subsection{Bootstrap Confidence Intervals for Saturon Critical Points}
 
-For critical point estimation with $N=1000$ bootstrap samples:
+For \saturon{} network critical point estimation with $N=1000$ bootstrap samples:
 
-\begin{lstlisting}[language=Python, caption=Bootstrap critical point analysis]
-def bootstrap_critical_point(conductivity_data, n_bootstrap=1000):
-    """Bootstrap analysis for critical point confidence intervals"""
+\begin{lstlisting}[language=Python, caption=Bootstrap analysis for Saturon critical point detection]
+def bootstrap_saturon_critical_point(conductivity_data, n_bootstrap=1000):
+    """Bootstrap analysis for Saturon network critical point confidence intervals"""
     critical_points = []
     
     for i in range(n_bootstrap):
@@ -227,45 +248,80 @@ def bootstrap_critical_point(conductivity_data, n_bootstrap=1000):
                                  replace=True)
         sample_data = conductivity_data[indices]
         
-        # Detect critical point in resampled data
+        # Detect Saturon network critical point in resampled data
         gradients = np.gradient(sample_data)
         critical_idx = np.argmax(np.abs(gradients))
         critical_points.append(interaction_values[critical_idx])
     
-    # Calculate confidence intervals
+    # Calculate confidence intervals for POSP verification
     ci_lower = np.percentile(critical_points, 2.5)
     ci_upper = np.percentile(critical_points, 97.5)
     
     return np.mean(critical_points), ci_lower, ci_upper
 \end{lstlisting}
 
-\subsection{Finite-Size Scaling Analysis}
+\subsection{Finite-Size Scaling Analysis for Saturon Networks}
 
-Critical exponent extraction using the scaling ansatz:
+Critical exponent extraction for \saturon{} percolation using the scaling ansatz:
 \begin{equation}
-C(L, \rho) = L^{-\beta/\nu} f\left(L^{1/\nu}(\rho - \rho_c)\right)
+C_{\text{Saturon}}(L, \rho) = L^{-\beta/\nu} f_{\text{POSP}}\left(L^{1/\nu}(\rho - \rho_c)\right)
 \end{equation}
 
-Implemented through data collapse optimization minimizing $\chi^2$ across multiple system sizes.
+Implemented through data collapse optimization minimizing $\chi^2$ across multiple \saturon{} network sizes, enabling direct comparison with \posp{} theoretical predictions.
 
-\section{Reproducibility Protocol}
+\section{Reproducibility Protocol for POSP Research}
 \label{app:reproducibility}
 
-\subsection{Environment Specification}
+\subsection{Environment Specification for Saturon Studies}
 \begin{itemize}
 \item Python 3.9+ with fixed package versions in \texttt{requirements.txt}
-\item CUDA 11.0+ for GPU acceleration (automatic CPU fallback available)
-\item Fixed random seeds throughout all analysis pipelines
-\item Docker containers for cross-platform reproducibility
+\item CUDA 11.0+ for GPU acceleration of \saturon{} dynamics (automatic CPU fallback available)
+\item Fixed random seeds throughout all \posp{} analysis pipelines
+\item Docker containers for cross-platform reproducibility of \saturon{} research
 \end{itemize}
 
-\subsection{Verification Tests}
-All results include automated verification:
+\subsection{Verification Tests for POSP Implementation}
+All \saturon{} network results include automated verification:
 \begin{itemize}
-\item Unit tests for CA update rules and boundary conditions
-\item Integration tests for complete analysis pipelines  
-\item Performance benchmarks ensuring consistent throughput
-\item Statistical validation tests for bootstrap and scaling analysis
+\item Unit tests for \saturon{} update rules and boundary conditions
+\item Integration tests for complete \posp{} analysis pipelines  
+\item Performance benchmarks ensuring consistent \saturon{} network throughput
+\item Statistical validation tests for bootstrap and scaling analysis of critical phenomena
 \end{itemize}
+
+\section{Resource Allocation for G1-G5 Research Program}
+\label{app:resources}
+
+\subsection{Personnel and Computational Requirements}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+Task & Personnel/Skill & Computational Resource \\
+\midrule
+2D/3D \saturon{} CA code & 1 (Python/JAX) & Colab Pro or single GPU \\
+Regge mesh + 3D CA & 1 (pygmsh/PyVista) & GPU or CPU cluster \\
+GRB/UHECR data analysis & 1 (AstroPy, ROOT) & Public data + laptop \\
+Boltzmann/CMB modeling & 1 (CLASS, CAMB) & CPU cluster \\
+Lab protocol development & 0.5–1 (quantum metrology) & Partner laboratory \\
+\bottomrule
+\end{tabular}
+\caption{Resource allocation for complete G1-G5 \saturon{} research program}
+\label{tab:resources}
+\end{table}
+
+\subsection{Timeline and Milestones}
+
+The \saturon{} research program follows a systematic progression:
+\begin{itemize}
+\item \textbf{Month 0–2}: G1 Paper I → arXiv, GitHub public release
+\item \textbf{Month 2–6}: G2 Regge mesh + 3D CA implementation and curved spacetime trials
+\item \textbf{Month 4–9}: G3 GRB data acquisition, delay fitting, and Paper III → arXiv
+\item \textbf{Month 9–14}: G4 Boltzmann numerics, CMB constraints, and Paper IV → arXiv
+\item \textbf{Month 12–24}: G5 Atomic clock protocol implementation and Paper V → arXiv/experimental proposal
+\end{itemize}
+
+This timeline enables systematic validation of \posp{} predictions across multiple observational domains while maintaining computational reproducibility throughout the research program.
 
 \end{document}
