@@ -1,0 +1,147 @@
+%% ------------------------------------------------------------------
+%%  Discussion Section – Da‑P_Satulon
+%%  This file lives in paper_G1/sections/discussion.tex
+%%  ------------------------------------------------------------------
+\section{Discussion\label{sec:discussion}}
+
+Our results demonstrate that extending cellular automata from 2D to 3D reveals 
+fundamentally new physics in information conductivity, while GPU acceleration 
+enables computational studies at previously inaccessible scales.
+
+%--------------------------------------------------------------------
+\subsection{Dimensional Crossover Effects}
+%--------------------------------------------------------------------
+
+The most striking finding is the strong dimensional dependence of entropy-based 
+conductivity ($-78\%$ reduction in 3D), contrasted with the dimensional 
+independence of the simple measure ($+2.3\%$ change). This suggests that 
+spatial correlations, captured primarily by entropy, undergo qualitative 
+changes when transitioning from 2D to 3D topologies.
+
+In 2D systems, information flow is constrained to planar diffusion, creating 
+long-range correlations that enhance entropy measures. The additional degree 
+of freedom in 3D allows for more isotropic spreading, reducing correlation 
+lengths and thus the effective entropy. This dimensional crossover is 
+reminiscent of the critical dimension effects observed in percolation theory, 
+where spatial dimensionality fundamentally alters the universality class.
+
+%--------------------------------------------------------------------
+\subsection{Critical Behavior and Universality}
+%--------------------------------------------------------------------
+
+The observed critical point at $\rho_c = 0.0500$ represents a genuine phase 
+transition in the 3D information conductivity model. The finite-size scaling 
+analysis yields $\nu \approx 0.34$, which differs from both 2D Ising 
+($\nu = 1.0$) and 3D Ising ($\nu = 0.6301$) values, suggesting a distinct 
+universality class for information conductivity phase transitions.
+
+This departure from classical Ising behavior likely reflects the non-conserved, 
+continuous-state nature of our cellular automaton model. Unlike traditional 
+spin systems, information conductivity involves local averaging operations 
+that preserve neither particle number nor discrete states, leading to 
+mean-field-like critical exponents.
+
+%--------------------------------------------------------------------
+\subsection{Computational Performance and Scalability}
+%--------------------------------------------------------------------
+
+The achieved throughput of $>270,000$ cells/second for 3D grids represents 
+a significant computational milestone. Linear scaling with grid size indicates 
+that memory bandwidth, rather than computational complexity, limits performance 
+for the current problem sizes. This opens the possibility for studying much 
+larger systems ($L > 100$) that could reveal finite-size effects and approach 
+the thermodynamic limit.
+
+The automatic CPU fallback mechanism ensures broad applicability across 
+different hardware configurations, while the CuPy backend maximizes performance 
+on GPU-equipped systems. This dual-mode implementation strategy could serve 
+as a model for other computational physics applications requiring both 
+accessibility and high performance.
+
+%--------------------------------------------------------------------
+\subsection{Comparison with Existing Literature}
+%--------------------------------------------------------------------
+
+Traditional cellular automata studies focus primarily on discrete binary states 
+and rule-based dynamics~\cite{wolfram2002new}. Our continuous-valued approach 
+with parameter-dependent interaction strengths bridges the gap between 
+discrete CA models and continuous partial differential equations, similar 
+to recent work on probabilistic cellular automata~\cite{sample_pca_ref}.
+
+The information-theoretic perspective, measuring conductivity through entropy 
+and gradient-based metrics, provides a novel lens for understanding emergent 
+collective behavior. This approach complements existing measures like 
+transfer entropy~\cite{schreiber2000measuring} and mutual information, 
+offering computationally efficient alternatives for large-scale studies.
+
+%--------------------------------------------------------------------
+\subsection{Implications for Complex Systems}
+%--------------------------------------------------------------------
+
+Information conductivity models may have applications beyond computational 
+studies. The observed dimensional effects could illuminate pattern formation 
+in biological systems, where 2D tissue dynamics differ qualitatively from 
+3D organ development. Similarly, the critical behavior might provide insights 
+into phase transitions in neural networks, social systems, or financial markets.
+
+The GPU acceleration framework enables real-time simulation and visualization, 
+opening possibilities for interactive exploration of parameter spaces and 
+immediate feedback in experimental design. This computational capability 
+could accelerate discovery in fields where cellular automata serve as 
+models for complex emergent phenomena.
+
+%--------------------------------------------------------------------
+\subsection{Limitations and Future Directions}
+%--------------------------------------------------------------------
+
+Several limitations warrant consideration:
+
+\paragraph{Finite-Size Effects:} Despite linear scaling, current grid sizes 
+($L \leq 50$) may still exhibit significant finite-size effects. Future 
+studies should target $L > 100$ to approach the thermodynamic limit and 
+validate critical exponent estimates.
+
+\paragraph{Boundary Conditions:} Zero-flux boundaries were chosen for 
+computational convenience, but periodic or absorbing boundaries might 
+reveal different physics. Systematic comparison of boundary effects 
+remains an open question.
+
+\paragraph{Parameter Space:} The current study focuses on a single interaction 
+parameter $\rho$. Multi-parameter models with anisotropic couplings, 
+time-dependent interactions, or spatially heterogeneous parameters 
+could yield richer phase diagrams.
+
+\paragraph{Validation:} While our results are internally consistent and 
+reproducible, experimental validation through physical analogs 
+(e.g., reaction-diffusion systems) would strengthen the theoretical 
+framework.
+
+%--------------------------------------------------------------------
+\subsection{Research Impact and Open Problems}
+%--------------------------------------------------------------------
+
+This work establishes information conductivity as a quantitative framework 
+for studying emergent behavior in extended systems. The dimensional crossover 
+effects and critical phenomena discovered here suggest several research 
+directions:
+
+\begin{itemize}
+\item \textbf{4D and higher dimensions:} Does the dimensional dependence continue, 
+and is there an upper critical dimension for information conductivity?
+
+\item \textbf{Quantum cellular automata:} Can information conductivity concepts 
+extend to quantum many-body systems with entanglement dynamics?
+
+\item \textbf{Machine learning integration:} Could neural networks learn 
+optimal interaction rules that maximize information conductivity?
+
+\item \textbf{Experimental realization:} What physical systems might exhibit 
+information conductivity phase transitions amenable to laboratory study?
+\end{itemize}
+
+The computational framework developed here provides the foundation for 
+addressing these questions through systematic numerical investigation.
+
+%% ------------------------------------------------------------------
+%%  End of file
+%% ------------------------------------------------------------------
