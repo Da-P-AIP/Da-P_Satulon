@@ -1,156 +1,176 @@
 %% ------------------------------------------------------------------
-%%  Methods Section – Da‑P_Satulon (Enhanced G2)
+%%  Methods Section – Da‑P_Satulon with Saturon Integration
 %%  This file lives in paper_G1/sections/methods.tex
 %%  ------------------------------------------------------------------
 \section{Methods\label{sec:methods}}
 
-This section describes the computational framework for studying information 
-conductivity in cellular automata, including the 3D extension, GPU acceleration, 
-and statistical analysis methods developed in the G2 phase.
+This section describes the computational framework for studying \saturon{} 
+network dynamics in 3D cellular automata, including the GPU acceleration 
+and statistical analysis methods that enable systematic testing of \posp{} 
+predictions.
 
 %--------------------------------------------------------------------
-\subsection{3D Cellular Automaton Model}
+\subsection{3D Saturon Network Model}
 %--------------------------------------------------------------------
 
-We extend the 2D framework to three spatial dimensions using a cubic lattice 
-$\Lambda = \{(i,j,k) : 1 \leq i,j,k \leq L\}$ with $N = L^3$ total cells. 
-Each cell $\sigma_{i,j,k}(t) \in [0,1]$ evolves according to the discrete-time 
-update rule:
+We implement the \posp{} framework using a cubic lattice 
+$\Lambda = \{(i,j,k) : 1 \leq i,j,k \leq L\}$ with $N = L^3$ discrete 
+spacetime cells. Each cell's occupation state $\sigma_{i,j,k}(t) \in [0,1]$ 
+represents the local \saturon{} field density, evolving according to the 
+\posp{}-based update rule:
 
 \begin{equation}
 \sigma_{i,j,k}(t+1) = (1-\rho)\sigma_{i,j,k}(t) + \frac{\rho}{6}\sum_{\langle \ell,m,n \rangle} \sigma_{\ell,m,n}(t)
-\label{eq:ca3d_update}
+\label{eq:saturon_update}
 \end{equation}
 
-where the sum runs over the six nearest neighbors (6-connected topology) and 
-$\rho \in [0,1]$ is the interaction strength parameter. Zero-flux boundary 
-conditions are applied at all faces of the cubic domain.
+where the sum runs over the six nearest neighbors (representing 6-connected 
+\saturon{} interactions) and $\rho \in [0,1]$ controls the \saturon{} coupling 
+strength. Zero-flux boundary conditions maintain \saturon{} conservation at 
+all faces of the cubic domain.
+
+This discrete update rule captures the essential \posp{} physics: when 
+$\rho \rightarrow 1$, neighboring cells approach occupation saturation, 
+creating topological defects (\saturon{} particles) that mediate long-range 
+information transfer.
 
 %--------------------------------------------------------------------
-\subsection{Information Conductivity Measures}
+\subsection{Saturon-Mediated Information Conductivity}
 %--------------------------------------------------------------------
 
-We quantify information flow using three complementary measures that capture 
-different aspects of the cellular dynamics:
+We quantify \saturon{} network dynamics using three complementary measures 
+that probe different aspects of topological defect behavior:
 
-\paragraph{Simple Conductivity:}
+\paragraph{Simple Conductivity (Direct Saturon Propagation):}
 \begin{equation}
 C_{\text{simple}}(t) = \frac{1}{N}\sum_{i,j,k} \sigma_{i,j,k}(t)
 \label{eq:simple}
 \end{equation}
 
-\paragraph{Entropy-based Conductivity:}
-The Shannon entropy of the probability distribution $p_s = |\{(i,j,k): \sigma_{i,j,k} \in [s, s+\Delta s)\}|/N$:
+This measures the average \saturon{} field density, capturing basic propagation 
+through the network without sensitivity to spatial coherence.
+
+\paragraph{Entropy-based Conductivity (Saturon Coherence):}
+The Shannon entropy of the \saturon{} field distribution $p_s = |\{(i,j,k): \sigma_{i,j,k} \in [s, s+\Delta s)\}|/N$:
 \begin{equation}
 C_{\text{entropy}}(t) = -\sum_{s} p_s(t) \log p_s(t)
 \label{eq:entropy}
 \end{equation}
 
-\paragraph{Gradient-based Conductivity:}
-Spatial gradient magnitude averaged over the entire grid:
+This captures \saturon{} coherence preservation across spatial domains, 
+showing strong sensitivity to topological network structure.
+
+\paragraph{Gradient-based Conductivity (Saturon Network Criticality):}
+Spatial gradient magnitude of the \saturon{} field:
 \begin{equation}
 C_{\text{gradient}}(t) = \frac{1}{N}\sum_{i,j,k} \sqrt{(\nabla \sigma)_{i,j,k}^2}
 \label{eq:gradient}
 \end{equation}
 
-where $\nabla \sigma$ is computed using central differences with appropriate 
-boundary treatments.
+This probes \saturon{} network criticality by detecting sharp spatial variations 
+that signal phase transition boundaries.
 
 %--------------------------------------------------------------------
-\subsection{GPU Acceleration Implementation}
+\subsection{GPU-Accelerated Saturon Dynamics}
 %--------------------------------------------------------------------
 
-Large-scale 3D simulations ($L \geq 30$) require substantial computational 
-resources. We implement GPU acceleration using the CuPy library, which provides 
-NumPy-compatible array operations on NVIDIA GPUs. The core update kernel 
-processes the 3D grid in parallel blocks:
+Large-scale \saturon{} network simulations ($L \geq 30$) require substantial 
+computational resources. We implement GPU acceleration using CuPy, enabling 
+parallel processing of \saturon{} field updates across the entire 3D grid:
 
 \begin{algorithm}[t]
-\caption{GPU-accelerated 3D CA update}
-\label{alg:gpu_update}
+\caption{GPU-accelerated 3D Saturon network evolution}
+\label{alg:gpu_saturon}
 \begin{algorithmic}[1]
-\STATE \textbf{Input:} Grid $\sigma^{(t)} \in \mathbb{R}^{L \times L \times L}$, interaction strength $\rho$
-\STATE \textbf{Output:} Updated grid $\sigma^{(t+1)}$
+\STATE \textbf{Input:} \saturon{} field $\sigma^{(t)} \in \mathbb{R}^{L \times L \times L}$, coupling $\rho$
+\STATE \textbf{Output:} Updated \saturon{} field $\sigma^{(t+1)}$
 \STATE Copy $\sigma^{(t)}$ to GPU memory
 \STATE Launch CUDA kernel with thread blocks covering $(i,j,k)$ indices
 \FOR{each thread $(i,j,k)$ in parallel}
-    \STATE Compute neighbor sum: $s = \sum_{\langle \ell,m,n \rangle} \sigma_{\ell,m,n}^{(t)}$
-    \STATE Apply update rule: $\sigma_{i,j,k}^{(t+1)} = (1-\rho)\sigma_{i,j,k}^{(t)} + \rho s/6$
+    \STATE Compute \saturon{} neighbor sum: $s = \sum_{\langle \ell,m,n \rangle} \sigma_{\ell,m,n}^{(t)}$
+    \STATE Apply \posp{} update: $\sigma_{i,j,k}^{(t+1)} = (1-\rho)\sigma_{i,j,k}^{(t)} + \rho s/6$
 \ENDFOR
 \STATE Copy result back to CPU memory
 \end{algorithmic}
 \end{algorithm}
 
 The implementation automatically falls back to CPU execution when GPU resources 
-are unavailable, ensuring broad compatibility.
+are unavailable, ensuring broad accessibility for \posp{} research.
 
 %--------------------------------------------------------------------
-\subsection{Parameter Optimization}
+\subsection{Saturon Network Optimization}
 %--------------------------------------------------------------------
 
-We employ Optuna~\cite{optuna2019} for Bayesian optimization of the interaction 
-strength $\rho$. The objective function maximizes the entropy-based conductivity:
+We employ Bayesian optimization using Optuna~\cite{optuna2019} to identify 
+optimal \saturon{} coupling strengths. The objective function maximizes 
+entropy-based conductivity to probe \saturon{} coherence:
 
 \begin{equation}
 \rho^* = \arg\max_{\rho \in [0,1]} \mathbb{E}[C_{\text{entropy}}(T)]
-\label{eq:optuna_objective}
+\label{eq:saturon_optimization}
 \end{equation}
 
-where $T$ is the final simulation time and the expectation is over random 
-initial conditions. Tree-structured Parzen Estimator (TPE) acquisition function 
-guides the search with 50 optimization trials.
+where $T$ is the final simulation time and the expectation averages over 
+random \saturon{} field initializations. Tree-structured Parzen Estimator 
+(TPE) acquisition guides the search with 50 optimization trials.
 
 %--------------------------------------------------------------------
-\subsection{Critical Point Detection}
+\subsection{Saturon Network Critical Point Detection}
 %--------------------------------------------------------------------
 
-Phase transitions are identified by locating the maximum susceptibility:
+\saturon{} network phase transitions are identified by locating maximum 
+susceptibility in the conductivity response:
 
 \begin{equation}
-\rho_c = \arg\max_{\rho} \left|\frac{\partial C(\rho)}{\partial \rho}\right|
-\label{eq:critical_detection}
+\rho_c = \arg\max_{\rho} \left|\frac{\partial C_{\text{saturon}}(\rho)}{\partial \rho}\right|
+\label{eq:saturon_critical}
 \end{equation}
 
-We perform parameter sweeps over $\rho \in [0.05, 0.20]$ with $N_{\text{sweep}}=10$ 
-uniformly spaced points. The gradient $\partial C/\partial \rho$ is estimated 
-using central differences with binomial smoothing to reduce numerical noise.
+We perform systematic parameter sweeps over $\rho \in [0.05, 0.20]$ with 
+$N_{\text{sweep}}=10$ uniformly spaced points. The gradient is estimated 
+using central differences with binomial smoothing to reduce numerical noise 
+in the \saturon{} field dynamics.
 
 %--------------------------------------------------------------------
-\subsection{Statistical Analysis}
+\subsection{Statistical Analysis for POSP Verification}
 %--------------------------------------------------------------------
 
 \paragraph{Bootstrap Confidence Intervals:}
 We generate $N_{\text{bootstrap}}=1000$ resampled datasets to estimate 95\% 
-confidence intervals for all measured quantities.
+confidence intervals for all \saturon{} network observables, enabling robust 
+statistical verification of \posp{} predictions.
 
-\paragraph{Finite-Size Scaling:}
-Critical exponents are extracted using the finite-size scaling ansatz:
+\paragraph{Finite-Size Scaling for Saturon Networks:}
+Critical exponents for \saturon{} network percolation are extracted using:
 \begin{equation}
-C(L, \rho) = L^{-\beta/\nu} f\left(L^{1/\nu}(\rho - \rho_c)\right)
-\label{eq:fss}
+C_{\text{saturon}}(L, \rho) = L^{-\beta/\nu} f_{\text{POSP}}\left(L^{1/\nu}(\rho - \rho_c)\right)
+\label{eq:saturon_fss}
 \end{equation}
-where $\beta$ and $\nu$ are critical exponents and $f$ is a universal scaling function.
+where $\beta$ and $\nu$ are critical exponents specific to \saturon{} network 
+phase transitions and $f_{\text{POSP}}$ is the universal scaling function 
+predicted by \posp{} theory.
 
 \paragraph{Universality Class Analysis:}
-Comparison with known 3D Ising model exponents ($\beta = 0.3265$, $\nu = 0.6301$) 
-helps classify the observed phase transition.
+Comparison with known 3D percolation exponents ($\beta = 0.4181$, $\nu = 0.8765$) 
+and 3D Ising exponents ($\beta = 0.3265$, $\nu = 0.6301$) helps classify 
+the \saturon{} network universality class and test \posp{} theoretical predictions.
 
 %--------------------------------------------------------------------
-\subsection{Computational Setup}
+\subsection{Computational Setup for POSP Research}
 %--------------------------------------------------------------------
 
-All simulations use:
+All \saturon{} network simulations use:
 \begin{itemize}
-\item Grid sizes: $L \in \{25, 30, 50\}$ (3D) for scaling studies
+\item Grid sizes: $L \in \{25, 30, 50\}$ (3D) for finite-size scaling studies
 \item Time steps: $\Delta t = 50$ for standard runs, up to $200$ for critical analysis
-\item Random seeds: Fixed at 42 for reproducibility
+\item Random seeds: Fixed at 42 for reproducible \posp{} testing
 \item Hardware: NVIDIA RTX series GPUs with CUDA compute capability $\geq 7.0$
-\item Software: Python 3.9+, CuPy 12.0+, NumPy 1.21+
+\item Software: Python 3.9+, CuPy 12.0+, NumPy 1.21+ for \saturon{} dynamics
 \end{itemize}
 
-The complete computational pipeline, from grid initialization through 
-statistical analysis, is automated and version-controlled to ensure 
-reproducible results.
+The complete computational pipeline, from \saturon{} field initialization 
+through \posp{} statistical analysis, is automated and version-controlled 
+to ensure reproducible verification of discrete spacetime theories.
 
 %% ------------------------------------------------------------------
 %%  End of file
