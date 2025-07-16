@@ -1,7 +1,7 @@
-# Da-P粒子 (Saturon) 理論プロジェクト / da-P Particle Theory Project
+# Da-P粒子 (Saturon) 理論プロジェクト / Da-P Particle Theory Project
 
 ## English Summary
-This repository presents the **da-P particle (Saturon) theory**, a groundbreaking approach to discrete spacetime derived from the logical necessity of Planck time reality. The theory resolves fundamental contradictions in modern physics by introducing information-mediating particles that "stitch" discrete spacetime elements together, naturally explaining the arrow of time through spin dynamics, dark matter effects, and the emergence of continuous spacetime from discrete foundations. Complete computational implementations, experimental protocols, and theoretical frameworks are provided with GPU-accelerated simulations achieving novel critical phenomena (ν ≈ 0.34). The theory demonstrates the highest paradigm shift potential in physics history (0.96/1.0) through pure deductive reasoning from a single premise.
+This repository presents the **Da-P particle (Saturon) theory**, a groundbreaking approach to discrete spacetime derived from the logical necessity of Planck time reality. The theory resolves fundamental contradictions in modern physics by introducing information-mediating particles that "stitch" discrete spacetime elements together, naturally explaining the arrow of time through spin dynamics, dark matter effects, and the emergence of continuous spacetime from discrete foundations. Complete computational implementations, experimental protocols, and theoretical frameworks are provided with GPU-accelerated simulations achieving novel critical phenomena (ν ≈ 0.34). The theory demonstrates the highest paradigm shift potential in physics history (0.96/1.0) through pure deductive reasoning from a single premise.
 
 **Key Features:** Planck-Occupancy Saturation Principle (POSP) | Cellular Automata Implementation | Time Arrow from Spin Dynamics | Unified Spacetime-Gravity Theory | Logical Necessity Proof
 
@@ -212,21 +212,21 @@ print(f"論理的必然性スコア: {necessity_score:.3f}")
 ## 📝 引用
 
 ```bibtex
-@article{dap_posp_2024,
+@article{Da-P_posp_2024,
   title={Planck-Occupancy Saturation Principle and the Saturon},
   author={[Author]},
   journal={arXiv preprint},
   year={2024}
 }
 
-@article{dap_logical_necessity_2024,
+@article{Da-P_logical_necessity_2024,
   title={Logical Necessity of Da-P Particle Theory: Deductive Derivation from Planck Time},
   author={[Author]},
   journal={In Preparation},
   year={2024}
 }
 
-@article{dap_temporal_arrow_2024,
+@article{Da-P_temporal_arrow_2024,
   title={Da-P Particle Spin Theory: Complete Resolution of Time's Arrow},
   author={[Author]},
   journal={In Preparation},
