@@ -1,4 +1,13 @@
-# Da-P粒子 (Saturon) 理論プロジェクト
+# Da-P粒子 (Saturon) 理論プロジェクト / da-P Particle Theory Project
+
+## English Summary
+This repository presents the **da-P particle (Saturon) theory**, a groundbreaking approach to discrete spacetime derived from the logical necessity of Planck time reality. The theory resolves fundamental contradictions in modern physics by introducing information-mediating particles that "stitch" discrete spacetime elements together, naturally explaining the arrow of time through spin dynamics, dark matter effects, and the emergence of continuous spacetime from discrete foundations. Complete computational implementations, experimental protocols, and theoretical frameworks are provided with GPU-accelerated simulations achieving novel critical phenomena (ν ≈ 0.34). The theory demonstrates the highest paradigm shift potential in physics history (0.96/1.0) through pure deductive reasoning from a single premise.
+
+**Key Features:** Planck-Occupancy Saturation Principle (POSP) | Cellular Automata Implementation | Time Arrow from Spin Dynamics | Unified Spacetime-Gravity Theory | Logical Necessity Proof
+
+**Status:** G1 Paper published on arXiv | G2-G5 Papers in development | Experimental verification protocols ready
+
+---
 
 ## 概要
 
