@@ -92,8 +92,6 @@ except Exception as e:
     print(f'❌ CA2D test failed: {e}')
     sys.exit(1)
 "
-        fi
-    
     - name: Test CA-2D core functionality
       run: |
         echo "=== CA-2D Core Functionality Test ==="
