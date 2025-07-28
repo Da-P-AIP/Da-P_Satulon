@@ -1,0 +1,57 @@
+# Progress Report v0.2 - da-P Particle Critical Behaviour
+
+This file should contain the PDF content from the uploaded document.
+
+## Key Achievements
+
+### Ultra-Precise 3D Measurements
+- Critical point: p_c(∞) = 0.009100 ± 0.000005
+- Critical exponent: ν_3D = 0.34 ± 0.01
+- System sizes: L = 64³, 128³
+
+### Preliminary 4D Results  
+- Critical point: p_c^4D ≈ 0.0092 ± 0.0005
+- Critical exponent: ν_4D ≈ 0.30 ± 0.03 (preliminary)
+- Systematic dimensional approach toward upper critical dimension
+
+### Hybrid Phase Transition Characteristics
+- **Energetic Properties (2nd-order-like)**: Zero latent heat, continuous energy density
+- **Dynamic Properties (1st-order-like)**: No hysteresis, finite relaxation time
+- **Novel Classification**: Defies conventional Ehrenfest classification
+
+### Computational Advances
+- Scale increase: 32² → 128³ (factor of ~2000)
+- Precision improvement: Δp ∼ 10⁻³ → 10⁻⁶  
+- Dimensional extension: 2D → 4D capability
+- GPU-accelerated simulations with CUDA-optimized PyTorch kernels
+
+## Roadmap to v1.0
+
+### Computational Targets (2-6 months)
+1. Large-scale 3D: Complete L = 192³, 256³ simulations
+2. 4D confirmation: Full critical exponent set in four dimensions  
+3. 5D mean-field test: Verify upper critical dimension d_c = 5
+4. Dynamic exponents: Extract z from survival time statistics
+
+### Theoretical Objectives (3-12 months)
+1. Analytical derivation: Mean-field theory yielding p_c = 0.009
+2. Renormalization group: Real-space RG analysis of critical behavior
+3. Field theory: Continuum description of da-P particle dynamics
+4. Universality proof: Rigorous classification of new critical class
+
+### Experimental Predictions
+1. Astrophysical signatures: GRB photon delays, gravitational wave dispersion
+2. Laboratory tests: Atomic clock network fluctuations  
+3. Condensed matter: Search for da-P-like phenomena in real materials
+
+## Community Engagement
+All computational code and raw data are publicly available at:
+https://github.com/Da-P-AIP/Da-P_Satulon
+
+## Data Availability
+- data_3D_L64_128.zip: Complete 3D measurement datasets
+- data_4D_64.zip: Preliminary 4D simulation results
+- scripts_hash.txt: Git commit information for full reproducibility
+
+Contact: contact.dap.project@gmail.com
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
