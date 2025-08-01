@@ -1,0 +1,307 @@
+name: DICP Theory CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  theory-validation:
+    name: 🔬 Theory Layer Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest-cov pytest-xdist  # Coverage and parallel testing
+    
+    - name: 🧮 Conservation Laws Check
+      run: |
+        echo "::group::Testing Conservation Laws"
+        python -m pytest tests/test_theory_validation.py::TestConservationLaws -v --tb=short
+        echo "::endgroup::"
+    
+    - name: 📊 Critical Exponents Validation  
+      run: |
+        echo "::group::Validating Critical Exponents (ν = 0.34 ± 0.01)"
+        python -m pytest tests/test_theory_validation.py::TestCriticalExponents -v --tb=short
+        echo "::endgroup::"
+    
+    - name: 📏 Dimensional Analysis
+      run: |
+        echo "::group::Dimensional Consistency Check"
+        python -m pytest tests/test_theory_validation.py::TestDimensionalAnalysis -v --tb=short
+        echo "::endgroup::"
+    
+    - name: 🔬 Experimental Predictions
+      run: |
+        echo "::group::Experimental Prediction Consistency"
+        python -m pytest tests/test_theory_validation.py::TestExperimentalPredictions -v --tb=short
+        echo "::endgroup::"
+
+  simulation-validation:
+    name: 🖥️ Simulation Layer Tests
+    runs-on: ubuntu-latest
+    needs: theory-validation
+    
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        
+    - name: 🚀 Quick Lattice Sweep (L=32³)
+      run: |
+        echo "::group::Running Quick 32³ Lattice Test"
+        python run_experiments.py \
+          --grid-size 32 \
+          --iterations 5 \
+          --interaction-min 0.008 \
+          --interaction-max 0.012 \
+          --interaction-steps 3 \
+          --conductivity-method entropy \
+          --output-dir ./ci_test_results \
+          --run-id "ci_quick_test_$(date +%s)" \
+          --verbose
+        echo "::endgroup::"
+        
+    - name: 📈 Critical Point Consistency
+      run: |
+        echo "::group::Verifying Critical Point Results"
+        python -c "
+        import pandas as pd
+        import glob
+        import numpy as np
+        
+        # Find results file
+        results = glob.glob('./ci_test_results/*/results_summary.csv')
+        if results:
+            df = pd.read_csv(results[0])
+            max_conductivity = df['conductivity_entropy'].max()
+            critical_interaction = df.loc[df['conductivity_entropy'].idxmax(), 'interaction_strength']
+            
+            print(f'Max conductivity: {max_conductivity:.6f}')
+            print(f'Critical interaction: {critical_interaction:.6f}')
+            
+            # Sanity checks
+            assert 0.005 < critical_interaction < 0.015, f'Critical point out of range: {critical_interaction}'
+            assert max_conductivity > 0, f'Invalid conductivity: {max_conductivity}'
+            print('✅ Critical point consistency check passed')
+        else:
+            print('⚠️ No results found - test may have failed')
+            exit(1)
+        "
+        echo "::endgroup::"
+        
+    - name: Upload simulation artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: ci-simulation-results
+        path: ./ci_test_results/
+        retention-days: 7
+
+  legacy-tests:
+    name: 🧪 Legacy Test Suite  
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+        
+    - name: Run existing test suite
+      run: |
+        echo "::group::Legacy Tests"
+        python -m pytest tests/test_experiments.py tests/test_grid.py tests/test_utils.py -v
+        echo "::endgroup::"
+
+  nightly-full-validation:
+    name: 🌙 Nightly Full Validation
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+        
+    - name: 🔬 Extended Theory Validation
+      run: |
+        echo "::group::Extended Theory Tests (Nightly)"
+        python -m pytest tests/test_theory_validation.py -v --tb=long
+        echo "::endgroup::"
+        
+    - name: 🚀 Large Scale Simulation (L=64³)
+      run: |
+        echo "::group::Large Scale Nightly Simulation"
+        python run_experiments.py \
+          --grid-size 64 \
+          --iterations 50 \
+          --interaction-min 0.007 \
+          --interaction-max 0.013 \
+          --interaction-steps 10 \
+          --conductivity-method entropy \
+          --output-dir ./nightly_results \
+          --run-id "nightly_$(date +%Y%m%d_%H%M)" \
+          --save-plots \
+          --verbose
+        echo "::endgroup::"
+        
+    - name: 📊 Generate Critical Exponent Report
+      run: |
+        echo "::group::Critical Exponent Analysis"
+        python -c "
+        import pandas as pd
+        import numpy as np
+        import glob
+        import json
+        from datetime import datetime
+        
+        # Load nightly results
+        results = glob.glob('./nightly_results/*/results_summary.csv')
+        if results:
+            df = pd.read_csv(results[0])
+            
+            # Analyze critical behavior
+            grouped = df.groupby('interaction_strength')['conductivity_entropy'].mean()
+            peak_idx = grouped.idxmax()
+            peak_value = grouped.max()
+            
+            # Generate report
+            report = {
+                'timestamp': datetime.now().isoformat(),
+                'critical_point': float(peak_idx),
+                'max_conductivity': float(peak_value),
+                'grid_size': 64,
+                'status': 'pass' if 0.008 < peak_idx < 0.012 else 'warning',
+                'note': 'Nightly validation completed'
+            }
+            
+            # Save report
+            with open('nightly_report.json', 'w') as f:
+                json.dump(report, f, indent=2)
+                
+            print(f'📊 Nightly Report Generated:')
+            print(f'   Critical Point: {report[\"critical_point\"]:.6f}')
+            print(f'   Max Conductivity: {report[\"max_conductivity\"]:.6f}')
+            print(f'   Status: {report[\"status\"]}')
+        "
+        echo "::endgroup::"
+        
+    - name: Upload nightly artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: nightly-validation-results
+        path: |
+          ./nightly_results/
+          ./nightly_report.json
+        retention-days: 30
+
+  auto-issue-on-failure:
+    name: 🚨 Auto-Issue Creation
+    runs-on: ubuntu-latest
+    if: failure()
+    needs: [theory-validation, simulation-validation]
+    
+    steps:
+    - name: Create issue on theory failure
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const title = '⚠️ Theory CI Failed - Immediate Investigation Required';
+          const body = `
+          ## 🚨 Theory Validation Failure
+          
+          **Workflow:** ${context.workflow}
+          **Run ID:** ${context.runId}
+          **Triggered by:** ${context.eventName}
+          **Commit:** ${context.sha}
+          
+          ### Failure Details
+          One or more theory validation tests have failed. This indicates potential issues with:
+          
+          - Conservation laws (energy-momentum conservation)
+          - Critical exponent measurements (ν = 0.34 ± 0.01)
+          - Dimensional analysis consistency
+          - Phase transition classification
+          
+          ### Action Required
+          1. Check the [workflow logs](${context.payload.repository.html_url}/actions/runs/${context.runId})
+          2. Identify which theory tests failed
+          3. Investigate potential causes:
+             - Numerical precision issues
+             - Algorithm changes affecting physics
+             - Parameter drift in critical measurements
+          4. Fix issues and ensure tests pass before merging
+          
+          ### Labels
+          - theory-breach
+          - urgent
+          - ci-failure
+          
+          *This issue was automatically created by the DICP Theory CI/CD Pipeline.*
+          `;
+          
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: title,
+            body: body,
+            labels: ['theory-breach', 'urgent', 'ci-failure']
+          });
+
+  update-status-badge:
+    name: 📛 Update Status Badge
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [theory-validation, simulation-validation, legacy-tests]
+    
+    steps:
+    - name: Update README badge status
+      run: |
+        if [[ "${{ needs.theory-validation.result }}" == "success" && "${{ needs.simulation-validation.result }}" == "success" ]]; then
+          echo "✅ All tests passed - README badge should show green"
+        else
+          echo "❌ Some tests failed - README badge should show red" 
+        fi
+        
+        echo "Theory Validation: ${{ needs.theory-validation.result }}"
+        echo "Simulation Validation: ${{ needs.simulation-validation.result }}"
+        echo "Legacy Tests: ${{ needs.legacy-tests.result }}"
